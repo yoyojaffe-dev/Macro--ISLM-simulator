@@ -1,4 +1,4 @@
-import { HORIZONS, vectorKey } from '../../engine/index.js';
+import { HORIZONS, vectorKey, regimeAt } from '../../engine/index.js';
 import { HORIZON_COLORS, STEP_KEYS } from '../theme.js';
 import { RichText, Var, Sign } from '../components/primitives.jsx';
 import ErrorBoundary from '../components/ErrorBoundary.jsx';
@@ -33,7 +33,7 @@ export default function LinkedCharts({ scenario, step, dispatch }) {
   const large = scenario.settings.economy === 'open' && scenario.settings.size === 'large';
   return (
     <section aria-label="הגרפים המקושרים" className="space-y-3">
-      <ReadingGuide cur={cur} step={step} color={color} zlb={zlb} signs={scenario.signs} />
+      <ReadingGuide cur={cur} step={step} color={color} zlb={zlb} signs={scenario.signs} pegged={regimeAt(scenario.settings, cur) === 'fixed'} />
       {scenario.cases.length > 1 && <CasePicker scenario={scenario} step={step} dispatch={dispatch} />}
       <div className="linked-grid grid gap-3">
         <div className="[grid-area:islm]">
@@ -97,10 +97,13 @@ function CasePicker({ scenario, step, dispatch }) {
   const open = scenario.settings.economy === 'open';
   const keys = ['Y', 'r', 'P', 'M', ...(open ? ['e', 'eps', 'NX'] : [])];
   const diff = keys.filter((k) => new Set(cases.map((c) => c.signs[k])).size > 1);
+  // Flags shared by every case do not tell them apart.
+  const common = cases.map((c) => new Set(c.flags)).reduce((a, b) => new Set([...a].filter((x) => b.has(x))));
+  const flagsOf = (c) => c.flags.filter((f) => !common.has(f));
   return (
     <section className="rounded-xl border-2 border-[#B54708]/40 bg-[#FFFAF2] px-4 py-2.5" aria-label="פיצול למקרים">
       <p className="text-[13px] font-bold text-ink">
-        בטווח הזה התוצאה תלויה בגודל השינויים, ולכן בטבלה מופיע ?. הגרפים מציירים מקרה אחד; בחרו מקרה:
+        בטווח הזה התוצאה תלויה בגודל השינויים: מה זז, או אם המשק מגיע לגבול (רצפת האפס, קצה הרצועה). הגרפים מציירים מקרה אחד; בחרו מקרה:
       </p>
       <div className="mt-2 flex flex-wrap gap-2">
         {cases.map((c, i) => {
@@ -109,7 +112,7 @@ function CasePicker({ scenario, step, dispatch }) {
             <button
               key={c.pattern}
               type="button"
-              onClick={() => dispatch({ type: 'SET_CASE', key: vectorKey(c.vec) })}
+              onClick={() => dispatch({ type: 'SET_CASE', vec: c.vec })}
               aria-pressed={on}
               className="rounded-lg border px-3 py-1.5 text-right text-[12.5px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-ink"
               style={{ borderColor: on ? '#B54708' : '#DCE1E8', background: on ? '#fff' : '#ffffffaa' }}
@@ -123,6 +126,7 @@ function CasePicker({ scenario, step, dispatch }) {
                   </span>
                 ))}
               </span>
+              {flagsOf(c).length > 0 && <span className="mt-0.5 block text-[11.5px] text-muted">{flagsOf(c).join(' · ')}</span>}
             </button>
           );
         })}
@@ -132,12 +136,22 @@ function CasePicker({ scenario, step, dispatch }) {
 }
 
 /** How to read the linked diagrams; a compact strip above the square. */
-function ReadingGuide({ cur, step, color, zlb, signs }) {
+function ReadingGuide({ cur, step, color, zlb, signs, pegged }) {
   const items = [
     ['שוק הכסף ↔ IS-LM', zlb ? 'הריבית ברצפת האפס: עודף הכסף לא מוריד את {r} מתחת ל-0.' : 'הריבית שמנקה את שוק הכסף היא אותה {r} בציר האנכי של {IS}-{LM}.'],
     ['IS-LM ↓ AD-AS', 'התוצר במפגש {IS} ו-{LM} יורד ישר למטה: אותו {Y} על {AD}.'],
-    ['AD-AS ↔ שוק העבודה', '{P} קובע את {wP} כש-{w} קבוע בחוזה, ולפיו נקבעים {L} והתוצר.'],
-    ['ובחזרה', 'שינוי ב-{P} משנה את {MP}: ההיצע בשוק הכסף זז, {LM} זזה, וכך נבנית {AD}.'],
+    [
+      'AD-AS ↔ שוק העבודה',
+      step === 1
+        ? 'בטווח המיידי {P} ו-{w} קבועים, והפירמות מעסיקות כמה שצריך כדי לייצר את {Y} שהביקוש קובע.'
+        : 'מהטווח הקצר {P} קובע את {wP} כש-{w} קבוע בחוזה, ולפיו נקבעים {L} והתוצר.',
+    ],
+    [
+      'ובחזרה',
+      pegged
+        ? 'בשע״ח קבוע שינוי ב-{P} משנה את {eps}: {NX} משתנה, {IS} זזה, וכך נבנית {AD} (הרצאה 8).'
+        : 'שינוי ב-{P} משנה את {MP}: ההיצע בשוק הכסף זז, {LM} זזה, וכך נבנית {AD}.',
+    ],
   ];
   return (
     <section className="rounded-xl border border-rule bg-white px-4 py-2.5">

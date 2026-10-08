@@ -43,7 +43,7 @@ export function Sign({ s, arrow = false, className = '' }) {
  * origin) as a small arrow: the algebra reads like the exam solutions.
  */
 export const SignContext = createContext(null);
-const VAR_FIELD = { 'Y*': 'Ystar', Res: 'reservesDelta', D: 'debt', Pe: null };
+const VAR_FIELD = { 'Y*': 'Ystar', 'P*': 'Pstar', Res: 'reservesDelta', D: 'debt', Pe: null };
 
 /** A variable symbol in its sector color. `glow` adds a halo (used for "active" variables). */
 export function Var({ k, glow = false, className = '', title, label, noSign = false }) {

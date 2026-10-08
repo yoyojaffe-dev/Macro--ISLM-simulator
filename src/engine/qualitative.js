@@ -14,7 +14,7 @@
  * can look at each, the way the exam solutions split into cases.
  */
 import { DEFAULT_PARAMS, SHOCK_DEFS, ZERO_SHOCKS } from './constants.js';
-import { buildScenario, sgn, isLarge } from './model.js';
+import { buildScenario, sgn } from './model.js';
 
 /** Size of a "unit" shock used for drawing (visible on the fixed axes). */
 export const SHOCK_UNIT = {
@@ -51,13 +51,12 @@ const SIZES = [0.3, 1, 3];
 /** Parameter grid: the extremes of each admissible slope. */
 function paramGrid(raw, settings) {
   const open = settings.economy === 'open';
-  const large = isLarge(settings);
   const axes = {
     c: [0.6, 0.85],
     b: [3, 25],
     h: [2, 25],
     k: [0.2, 0.7],
-    ...(open && !large ? { m: [0.1, 0.35], n: [100, 600] } : {}),
+    ...(open ? { m: [0.1, 0.35], n: [100, 600] } : {}),
   };
   let grid = [{ ...DEFAULT_PARAMS, ...raw }];
   for (const [key, vals] of Object.entries(axes)) grid = grid.flatMap((p) => vals.map((v) => ({ ...p, [key]: v })));
@@ -97,6 +96,7 @@ export const RULES = {
   G_Y: { id: 'G', field: 'Y', label: 'ΔG נקבע כך ש-Y המיידי לא משתנה' },
   T_Y: { id: 'T', field: 'Y', label: 'ΔT נקבע כך ש-Y המיידי לא משתנה' },
   M_Y: { id: 'M', field: 'Y', label: 'ΔM נקבע כך ש-Y המיידי לא משתנה' },
+  M_r: { id: 'M', field: 'r', label: 'ΔM נקבע כך ש-i המיידי לא משתנה (מדיניות מוניטרית מתאימה)' },
   M_E: { id: 'M', field: 'e', label: 'ΔM נקבע כך ש-E המיידי לא משתנה' },
 };
 
@@ -133,37 +133,92 @@ export function realize(params, settings, shocks, vec = {}, rules = []) {
 const SYM = { 1: '+', '-1': '−', 0: '=' };
 
 /**
+ * A condition stated in a question ("given that Y rose in the immediate run"):
+ * { from, to, v, sign } with steps 0-3 and sign '+', '−' or '='. Only the
+ * realizations that satisfy every condition are kept.
+ */
+const holdsGiven = (sn, given) =>
+  (given || []).every(({ from, to, v, sign }) => {
+    const a = sn[from];
+    const z = sn[to];
+    if (!a || !z || a.noEq || z.noEq || !a.valid || !z.valid) return false;
+    const x = a[v];
+    const y = z[v];
+    if (!(Number.isFinite(x) && Number.isFinite(y))) return false;
+    return SYM[sgn(y - x, 1e-7 * (1 + Math.abs(x)))] === sign.replace('-', '−');
+  });
+
+/**
  * Signs of every variable at every step, relative to the origin and to the
  * previous step, robust over parameters and relative shock sizes.
  * Returns { origin: [4][var], prev: [4][var], noEq: [4] ('all'|'some'|null), cases }.
  */
-export function qualitative(rawParams, settings, shocks, { fixed = false, rules = [] } = {}) {
+export function qualitative(rawParams, settings, shocks, { fixed = false, rules = [], given = null } = {}) {
   const ruled = new Set((rules || []).map((k) => RULES[k]?.id));
   const ids = SHOCK_DEFS.filter((d) => d.applies(settings) && shocks[d.id] && !ruled.has(d.id)).map((d) => d.id);
   const vectors = sizeVectors(ids, fixed);
-  const seen = { origin: [0, 1, 2, 3].map(() => ({})), prev: [0, 1, 2, 3].map(() => ({})) };
+  const seen = {
+    origin: [0, 1, 2, 3].map(() => ({})),
+    prev: [0, 1, 2, 3].map(() => ({})),
+    // When expectations fade while prices adjust, the change is split in two
+    // (see buildScenario's expectOnly): expectations at old prices, then prices.
+    expect: [0, 1, 2, 3].map(() => ({})),
+    price: [0, 1, 2, 3].map(() => ({})),
+  };
   const noEqCount = [0, 0, 0, 0];
+  const invalidCount = [0, 0, 0, 0];
   let total = 0;
   const add = (bucket, step, v, s) => ((bucket[step][v] ||= new Set()).add(s));
   // With free sizes, a very large shock can push the closed-economy rate to
   // zero; the course treats the liquidity trap as a separate case, so those
   // realizations count only when nothing else is possible.
-  const runs = [];
+  let runs = [];
   for (const params of paramGrid(rawParams, settings)) {
     for (const vec of vectors) {
-      const sn = buildScenario(params, settings, realize(params, settings, shocks, vec, rules)).snapshots;
-      runs.push({ sn, trap: !sn[0].zlb && sn.some((x) => x.zlb) });
+      const sc = buildScenario(params, settings, realize(params, settings, shocks, vec, rules));
+      const sn = sc.snapshots;
+      runs.push({ sn, ex: sc.expectOnly, trap: !sn[0].zlb && sn.some((x) => x.zlb) });
     }
+  }
+  // Conditions given in the question keep only the realizations that meet them.
+  let givenImpossible = false;
+  if (given && given.length) {
+    const kept = runs.filter((x) => holdsGiven(x.sn, given));
+    givenImpossible = kept.length === 0;
+    if (!givenImpossible) runs = kept;
   }
   const normal = runs.filter((x) => !x.trap);
   const used = fixed || normal.length === 0 ? runs : normal;
   const trapSome = !fixed && normal.length > 0 && normal.length < runs.length;
-  for (const { sn } of used) {
+  const cmp = (bucket, st, from, to) => {
+    for (const v of SIGN_VARS) {
+      const a = from[v];
+      const z = to[v];
+      if (typeof a === 'number' && typeof z === 'number' && Number.isFinite(a) && Number.isFinite(z)) {
+        add(bucket, st, v, sgn(z - a, 1e-7 * (1 + Math.abs(a))));
+      }
+    }
+  };
+  for (const { sn, ex } of used) {
+    for (const [st, key] of [[2, 'mr'], [3, 'lr']]) {
+      const mid = ex?.[key];
+      const p = sn[st - 1];
+      if (!mid || sn[st].noEq || !sn[st].valid || p.noEq || !p.valid) continue;
+      cmp(seen.expect, st, p, mid);
+      cmp(seen.price, st, mid, sn[st]);
+    }
     {
       total += 1;
       for (let st = 1; st <= 3; st += 1) {
-        if (sn[st].noEq || !sn[st].valid) {
+        // No equilibrium is an economic result; an invalid realization (a
+        // component turned negative at extreme slopes) is a model breakdown.
+        // Neither contributes signs.
+        if (sn[st].noEq) {
           noEqCount[st] += 1;
+          continue;
+        }
+        if (!sn[st].valid) {
+          invalidCount[st] += 1;
           continue;
         }
         for (const v of SIGN_VARS) {
@@ -189,8 +244,15 @@ export function qualitative(rawParams, settings, shocks, { fixed = false, rules 
         ? Object.fromEntries(SIGN_VARS.map((v) => [v, '=']))
         : Object.fromEntries(Object.entries(m).map(([v, set]) => [v, set.size === 1 ? SYM[[...set][0]] : '?'])),
     );
-  const noEq = noEqCount.map((n) => (n === 0 ? null : n === total ? 'all' : 'some'));
-  return { origin: fold(seen.origin), prev: fold(seen.prev), noEq, trapSome };
+  const noEq = noEqCount.map((n, st) => (n + invalidCount[st] === total && total > 0 ? 'all' : n === 0 ? null : 'some'));
+  return {
+    origin: fold(seen.origin),
+    prev: fold(seen.prev),
+    split: { expect: fold(seen.expect), price: fold(seen.price) },
+    noEq,
+    trapSome,
+    givenImpossible,
+  };
 }
 
 const sizeWord = (f) => (f > 1 ? 'חזק' : f < 1 ? 'חלש' : 'בינוני');
@@ -222,13 +284,24 @@ export function caseSplit(params, settings, shocks, { fixed = false, rules = [] 
       groups.get(pattern).push(r.vec);
     }
     const signsOf = (pattern) => Object.fromEntries(KEY_VARS.map((v, i) => [v, pattern[i]]));
+    // What the pattern says beyond the signs: no equilibrium, the zero bound, the band.
+    const flagsOf = (pattern) => {
+      const tail = pattern.slice(KEY_VARS.length);
+      const out = [];
+      if (tail.includes('N')) out.push('אין שיווי משקל');
+      if (tail.includes('Z')) out.push('הריבית ברצפת האפס');
+      if (tail.endsWith('inside')) out.push('שע״ח בתוך הרצועה');
+      if (tail.endsWith('low')) out.push('שע״ח בגבול התחתון');
+      if (tail.endsWith('high')) out.push('שע״ח בגבול העליון');
+      return out;
+    };
     const list = [...groups.entries()].map(([pattern, vecs]) => {
       // Prefer the most telling member: equal sizes, then one dominant shock.
       const pick =
         vecs.find((v) => Object.values(v).every((f) => f === 1)) ||
         vecs.find((v) => Object.values(v).filter((f) => f === 3).length === 1 && Object.values(v).every((f) => f !== 1)) ||
         vecs[0];
-      return { pattern, signs: signsOf(pattern), vec: pick, label: describe(pick, ids) };
+      return { pattern, signs: signsOf(pattern), flags: flagsOf(pattern), vec: pick, members: vecs, label: describe(pick, ids) };
     });
     return list.length > 1 ? list : [];
   });

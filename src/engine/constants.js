@@ -2,7 +2,7 @@
  * Calibration and definitions for the macro engine.
  *
  * The baseline (t0) is a long-run equilibrium that every parameter setting
- * passes through: Y* = 1000, r = r* = 3%, P = 1, real exchange rate = 1,
+ * passes through: Y* = 1000, i = i* = 5%, P = 1, real exchange rate = 1,
  * balanced trade. When a structural slider moves (c, b, k, h, m, n), the
  * autonomous intercepts are re-calibrated so the curves ROTATE around this
  * point instead of jumping away. This mirrors the course's numerical example:
@@ -11,7 +11,7 @@
 
 export const CAL = Object.freeze({
   Ystar: 1000,
-  rStar: 3, // percent
+  rStar: 5, // percent (high enough that ordinary demand shocks keep the medium-run rate above zero)
   P0: 1,
   eps0: 1, // real exchange rate at t0
   e0: 1, // nominal exchange rate at t0 (NIS per unit of foreign currency)
@@ -34,7 +34,7 @@ export const PARAM_DEFS = [
     id: 'c',
     sym: 'c',
     label: 'נטייה שולית לצרוך (MPC)',
-    hint: 'c גבוה מגדיל את המכפיל ומשטיח את עקומת IS',
+    hint: 'c גבוה מגדיל את המכפיל ומשטיח את עקומת IS. הסימולטור שומר על c(1 − t) + δ + β < 1, אחרת המכפיל אינסופי',
     sector: 'real',
     min: 0.5,
     max: 0.88,
@@ -60,7 +60,8 @@ export const PARAM_DEFS = [
     id: 't',
     sym: 't',
     label: 'שיעור מס פרופורציונלי',
-    hint: 'T = T̄ + tY (הרצאה 2): מייצב אוטומטי. המכפיל יורד ל-1/[1 − c(1 − t)] ו-IS מתללת',
+    words: ['נמוך', 'בינוני', 'גבוה'],
+    hint: 'T = T̄ + tY (הרצאה 2): מייצב אוטומטי. המכפיל יורד ל-1/[1 − c(1 − t)], ועקומת IS תלולה יותר',
     sector: 'fiscal',
     min: 0,
     max: 0.4,
@@ -99,10 +100,11 @@ export const PARAM_DEFS = [
     id: 'k',
     sym: 'k',
     label: 'רגישות הביקוש לכסף לתוצר',
-    hint: 'k גבוה מתלל את LM. k = 0: הביקוש לכסף לא תלוי בתוצר, LM אופקית (מרכז למידה 4)',
+    hint: 'k גבוה מגדיל את שיפוע LM. ל-k = 0 (הביקוש לכסף לא תלוי בתוצר, מרכז למידה 4) בחרו בהנחה החלופית המתאימה',
     sector: 'monetary',
-    min: 0,
-    minOpen: 0.05, // k = 0 with perfect capital mobility leaves LM parallel to CM: no equilibrium
+    // k = 0 is a different model (flat LM), offered as an alternative assumption,
+    // so the sign engine can vary k over positive values.
+    min: 0.05,
     max: 1,
     step: 0.01,
     default: 0.4,
@@ -154,6 +156,7 @@ export const PARAM_DEFS = [
     id: 'bw',
     sym: '±',
     label: 'רוחב רצועת הניוד (אחוז לכל כיוון)',
+    words: ['צרה', 'בינונית', 'רחבה'],
     hint: 'בתוך הרצועה שע״ח נע בחופשיות; בקצה הבנק המרכזי קונה או מוכר מט״ח (מרכז למידה 7)',
     sector: 'open',
     min: 1,
@@ -197,10 +200,14 @@ export const PARAM_DEFS = [
     id: 'omega',
     sym: 'ω',
     label: 'חלק המשק המקומי בתוצר העולמי',
+    words: ['קטן', 'בינוני', 'גדול'],
     hint: 'ω = 0.5: שתי כלכלות שוות בגודלן. ω קטן: המשק קטן ביחס לעולם, והתוצאות מתקרבות למשק קטן ופתוח',
     sector: 'open',
     min: 0.05,
-    max: 0.8,
+    // Up to half the world: a larger home economy would spend less than its
+    // own share on home goods, and a home fiscal expansion would then
+    // depreciate the home currency, unlike Lecture 12.
+    max: 0.5,
     step: 0.05,
     default: 0.5,
     digits: 2,
@@ -342,7 +349,7 @@ export const SHOCK_DEFS = [
     id: 'W',
     sym: 'W',
     label: 'שכר נומינלי בחוזים',
-    hint: 'למשל בציפייה לעליית מחירים (הרצאה 4). פועל מהטווח הקצר: AS זזה שמאלה. בטווח הבינוני השכר חוזר לרמת השוק',
+    hint: 'למשל בציפייה לעליית מחירים (הרצאה 4). פועל מהטווח הקצר: עלייה ב-W מזיזה את AS שמאלה, וירידה מזיזה אותה ימינה. בטווח הבינוני השכר חוזר לרמת השוק',
     group: 'supply',
     sector: 'prices',
     min: -15,
@@ -354,7 +361,7 @@ export const SHOCK_DEFS = [
   {
     id: 'e',
     sym: 'E',
-    label: 'פיחות יזום (שינוי בשע״ח הקבוע)',
+    label: 'שינוי יזום בשער הקבוע (↑ פיחות, ↓ ייסוף)',
     group: 'fx',
     sector: 'open',
     min: -30,
@@ -429,7 +436,7 @@ export const SHOCK_DEFS = [
     id: 'Ee',
     sym: 'ΔEᵉ',
     label: 'ציפיות לשינוי בשע״ח (פיחות צפוי)',
-    hint: 'UIP: i = i* + ΔEᵉ. ערך שלילי = ציפייה לייסוף (למשל אחרי פיחות חד, הרצאה 9). הציפיות דועכות: מלאות בטווח המיידי, חצי בקצר, אפס בבינוני',
+    hint: 'UIRP: i = i* + ΔEᵉ. ↓ = ציפייה לייסוף (למשל אחרי פיחות חד, הרצאה 9). הציפיות דועכות: מלאות בטווח המיידי, חלקיות בקצר, אפס בבינוני',
     group: 'open',
     sector: 'open',
     min: -3,
@@ -442,7 +449,7 @@ export const SHOCK_DEFS = [
     id: 'Mf',
     sym: 'M*',
     label: 'כמות הכסף בחו״ל (הבנק המרכזי הזר)',
-    hint: 'ביחס לגודל המשק הזר: ‎+50 בחו״ל שקול ל-+50 במשק המקומי כשהמשקים שווים',
+    hint: 'השינוי נמדד ביחס לגודל המשק הזר',
     group: 'world',
     sector: 'open',
     min: -150,
@@ -550,8 +557,8 @@ export const DEFAULT_SETTINGS = Object.freeze({
 
 /** The four simulator states. `course` is the matching horizon name in the course slides. */
 export const HORIZONS = [
-  { key: 't0', label: 'מצב מוצא', short: 't₀', course: 'שיווי משקל ארוך טווח לפני הזעזוע' },
-  { key: 'sr', label: 'טווח מיידי', short: 'מיידי', course: 'P, w, K קבועים; Y גמיש ונקבע לפי הביקוש (הרצאה 5)' },
-  { key: 'mr', label: 'טווח קצר', short: 'קצר', course: 'w, K קבועים; Y, P נקבעים בשיווי משקל בין AD ל-SRAS' },
-  { key: 'lr', label: 'טווח בינוני', short: 'בינוני', course: 'K קבוע; w מתעדכן ומזיז את עקומת AS; Y = Y*' },
+  { key: 't0', label: 'מצב מוצא', inLabel: 'במצב המוצא', short: 't₀', course: 'שיווי משקל בתעסוקה מלאה לפני הזעזוע: Y = Y*' },
+  { key: 'sr', label: 'טווח מיידי', inLabel: 'בטווח המיידי', short: 'מיידי', course: 'P, W, K קבועים; Y גמיש ונקבע לפי הביקוש (הרצאה 5)' },
+  { key: 'mr', label: 'טווח קצר', inLabel: 'בטווח הקצר', short: 'קצר', course: 'W, K קבועים; Y, P נקבעים בשיווי משקל בין AD ל-SRAS' },
+  { key: 'lr', label: 'טווח בינוני', inLabel: 'בטווח הבינוני', short: 'בינוני', course: 'K קבוע; W מתעדכן ומזיז את עקומת AS; Y = Y*' },
 ];

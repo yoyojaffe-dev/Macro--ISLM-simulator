@@ -164,7 +164,14 @@ function bandBounds(base, shocks) {
   if (sl < 0) lo *= 1 + sl / 100;
   if (sh < 0) hi = Math.min(hi, CAL.e0 * (1 + sh / 100));
   if (sh > 0) hi *= 1 + sh / 100;
-  return { bandLo: lo, bandHi: Math.max(lo, hi) };
+  // An edge moved past the other one drags it along: the band collapses at the
+  // edge that was moved (raising the floor above the ceiling, or lowering the
+  // ceiling below the floor).
+  if (lo > hi) {
+    if (sh < 0 && !(sl > 0)) lo = hi;
+    else hi = lo;
+  }
+  return { bandLo: lo, bandHi: hi };
 }
 
 /** Gaussian elimination with partial pivoting (small dense systems). */
@@ -293,8 +300,19 @@ export function effectiveParams(params, settings) {
   out.beta = a.investY ? params.betaV ?? 0.1 : 0;
   out.phi = a.noExportA ? 0 : CAL.phi;
   out.flatLM = Boolean(a.flatLM) && settings.economy === 'closed';
+  // Keep the multiplier finite: c(1 − t) + δ + β < 1 (learning center 4: c + δ < 1).
+  out.c = Math.min(out.c, maxC(out));
   return out;
 }
+
+/**
+ * Highest marginal propensity to spend out of output, c(1 − t) + δ + β, the
+ * simulator allows. At 1 the multiplier is infinite and IS turns upward.
+ */
+export const MPS_MAX = 0.95;
+
+/** Largest c that keeps c(1 − t) + δ + β ≤ MPS_MAX for the given t, δ, β. */
+export const maxC = (p) => (MPS_MAX - (p.delta || 0) - (p.beta || 0)) / (1 - (p.t || 0));
 
 /**
  * Demand-side equilibrium for a given price level P.
@@ -387,11 +405,15 @@ export function demand(params, settings, exo, P) {
       regimeNow = 'fixed';
     } else if (settings.regime === 'band') {
       const fl = floatSol();
-      if (!(fl.e >= exo.bandLo)) {
+      // A relative tolerance keeps a rate that starts exactly at an edge from
+      // being read as an intervention because of rounding. A ceiling-only band
+      // has no floor (bandLo = 0).
+      const tol = 1e-9 * CAL.e0;
+      if (exo.bandLo > 0 && !(fl.e >= exo.bandLo - tol)) {
         sol = fixedSol(exo.bandLo);
         band = 'low';
         regimeNow = 'fixed';
-      } else if (fl.e > exo.bandHi) {
+      } else if (fl.e > exo.bandHi + tol) {
         sol = fixedSol(exo.bandHi);
         band = 'high';
         regimeNow = 'fixed';
@@ -440,25 +462,34 @@ export const potentialOutput = (exo) =>
 const laborFor = (Y, exo) => (Y / (exo.A * Math.sqrt(exo.K))) ** 2;
 
 /**
- * Find P with f(P) = 0 where f is non-increasing (AD minus AS).
- * Bisection in log space. Returns { P, ok }.
+ * Find P with f(P) = 0 where f is non-increasing in P (AD minus AS, in output
+ * units). Prices move from `prefer` (the previous step's price level) and stop
+ * at the first P where f reaches zero, so when AD is vertical exactly at the
+ * target (a whole interval of solutions, e.g. demand pinned at the zero lower
+ * bound or investment independent of i) the price level does not jump.
+ * Bisection in log space. Returns { P, ok, side } (side: where it failed).
  */
-export function solvePrice(f, lo = 1e-3, hi = 1e3) {
-  let flo = f(lo);
-  const fhi = f(hi);
-  if (!(flo >= 0) || !(fhi <= 0)) return { P: NaN, ok: false };
-  let a = Math.log(lo);
-  let z = Math.log(hi);
-  for (let i = 0; i < 200; i += 1) {
+export function solvePrice(f, prefer = 1, lo = 1e-3, hi = 1e3) {
+  const tol = 1e-12 * CAL.Ystar; // above rounding noise (~1e-13 relative), far below sign tolerances
+  const p0 = Math.min(Math.max(prefer, lo), hi);
+  const fp = f(p0);
+  if (!Number.isFinite(fp)) return { P: NaN, ok: false, side: null };
+  if (Math.abs(fp) <= tol) return { P: p0, ok: true };
+  const rising = fp > 0; // excess demand at the old price: P must rise
+  let a = Math.log(rising ? p0 : lo);
+  let z = Math.log(rising ? hi : p0);
+  const fEnd = f(Math.exp(rising ? z : a));
+  if (rising ? !(fEnd <= tol) : !(fEnd >= -tol)) return { P: NaN, ok: false, side: rising ? 'high' : 'low' };
+  for (let i = 0; i < 200 && z - a > 1e-13; i += 1) {
     const mid = (a + z) / 2;
     const fm = f(Math.exp(mid));
-    if (Math.abs(fm) < 1e-10) return { P: Math.exp(mid), ok: true };
-    if (fm > 0) {
-      a = mid;
-      flo = fm;
-    } else z = mid;
+    if (rising) {
+      if (fm > tol) a = mid;
+      else z = mid;
+    } else if (fm >= -tol) a = mid;
+    else z = mid;
   }
-  return { P: Math.exp((a + z) / 2), ok: true };
+  return { P: Math.exp(rising ? z : a), ok: true };
 }
 
 /** Wage index: normalized so that w0 = P0 and w/P = 1 at t0. */
@@ -543,9 +574,9 @@ function makeSnapshot(key, ctx, exoIn, P, Pe, w, flags = {}) {
  * Small or closed economy: 1-D bisection on P (foreign prices exogenous).
  * Two-economy world: 2-D damped Newton on (log P, log P*).
  */
-function equilibriumPrices(params, settings, exo, yT, yfT) {
+function equilibriumPrices(params, settings, exo, yT, yfT, prefer = CAL.P0) {
   if (!isLarge(settings)) {
-    const sol = solvePrice((P) => demand(params, settings, exo, P).Y - yT(P));
+    const sol = solvePrice((P) => demand(params, settings, exo, P).Y - yT(P), prefer);
     return { ...sol, Pf: exo.Pstar };
   }
   const F = ([lp, lpf]) => {
@@ -635,18 +666,25 @@ export function buildScenario(rawParams, settings, rawShocks) {
 
   const YstarN = potentialOutput(shocked);
   const wPush = 1 + (shocks.W || 0) / 100;
-  // A long-run equilibrium that needs a negative interest rate does not exist:
-  // the price level would have to fall without bound (AD is vertical at i = 0).
-  let needsNegativeRate = false;
-  const flexible = (key) => {
+  // Why a flexible-price equilibrium is missing (see noEqReason below).
+  let noEqReason = null;
+  let noEqSide = null;
+  const diagnose = (exo) => {
+    // Demand at the extremes of the price level tells why no P clears the market.
+    const dLo = demand(params, settings, exo, 1e-3);
+    const dHi = demand(params, settings, exo, 1e3);
+    const side = dHi.Y > YstarN ? 'excess' : dLo.Y < YstarN ? 'deficient' : null;
+    // AD vertical: demand does not react to the price level at all.
+    if (Number.isFinite(dLo.Y) && Math.abs(dLo.Y - dHi.Y) < 1e-6 * YstarN) return { reason: 'vertical', side };
+    // Too little demand even at very low prices, with the rate stuck at zero: liquidity trap.
+    if (side === 'deficient' && dLo.zlb) return { reason: 'trap', side };
+    return { reason: 'linear', side };
+  };
+  const flexible = (key, prefer) => {
     const exo = exoAt(key);
-    const sol = equilibriumPrices(params, settings, exo, () => YstarN, () => Yf0);
-    if (sol.ok && sol.P < 0.1 && settings.economy === 'closed') {
-      needsNegativeRate = true;
-      return null;
-    }
+    const sol = equilibriumPrices(params, settings, exo, () => YstarN, () => Yf0, prefer);
     if (!sol.ok) {
-      if (settings.economy === 'closed' && demand(params, settings, exo, 1e-3).zlb) needsNegativeRate = true;
+      if (!noEqReason) ({ reason: noEqReason, side: noEqSide } = diagnose(exo));
       return null;
     }
     return makeSnapshot(key, ctx, withPf(exo, sol.Pf), sol.P, sol.P, marketWage(sol.P, shocked));
@@ -656,7 +694,7 @@ export function buildScenario(rawParams, settings, rawShocks) {
   // Short run
   let sr;
   if (school === 'classical') {
-    sr = flexible('sr') || { ...sticky('sr'), noEq: true };
+    sr = flexible('sr', P0) || { ...sticky('sr'), noEq: true };
   } else {
     sr = sticky('sr');
   }
@@ -669,7 +707,7 @@ export function buildScenario(rawParams, settings, rawShocks) {
   // Medium run
   let mr;
   if (school === 'classical') {
-    mr = flexible('mr') || { ...sr, key: 'mr', noEq: true };
+    mr = flexible('mr', sr.P) || { ...sr, key: 'mr', noEq: true };
   } else if (school === 'extreme') {
     // P = w/a: a higher contract wage raises the price level one for one.
     const Pw = P0 * wPush;
@@ -677,10 +715,15 @@ export function buildScenario(rawParams, settings, rawShocks) {
   } else if (assume.fixedLabor) {
     // Labor demand does not depend on P (2026 exam, Q2): employment, and so
     // output, stay at their full-employment level once prices move. The
-    // short-run AS is vertical; the immediate AS is still horizontal.
+    // short-run AS is vertical; the immediate AS is still horizontal. New wage
+    // contracts (W) change only the real wage.
     const exo = exoAt('mr');
-    const sol = equilibriumPrices(params, settings, exo, () => YstarN, () => Yf0);
-    mr = sol.ok ? makeSnapshot('mr', ctx, withPf(exo, sol.Pf), sol.P, P0, w0) : { ...sticky('mr'), noEq: true };
+    const sol = equilibriumPrices(params, settings, exo, () => YstarN, () => Yf0, P0);
+    if (sol.ok) mr = makeSnapshot('mr', ctx, withPf(exo, sol.Pf), sol.P, P0, w0 * wPush);
+    else {
+      ({ reason: noEqReason, side: noEqSide } = diagnose(exo));
+      mr = { ...sticky('mr'), noEq: true };
+    }
   } else {
     const exo = exoAt('mr');
     const Pe = P0 * wPush; // contracts signed at a higher wage: SRAS through (Y*, P0·(1+W))
@@ -690,17 +733,33 @@ export function buildScenario(rawParams, settings, rawShocks) {
       exo,
       (P) => YstarN * (P / Pe),
       (Pf) => Yf0 * (Pf / Pf0),
+      P0,
     );
-    mr = sol.ok ? makeSnapshot('mr', ctx, withPf(exo, sol.Pf), sol.P, Pe, w0 * wPush) : sticky('mr');
+    // Along an upward-sloping SRAS a solution always exists unless the linear
+    // model breaks down; then the step is reported as having no equilibrium.
+    if (sol.ok) mr = makeSnapshot('mr', ctx, withPf(exo, sol.Pf), sol.P, Pe, w0 * wPush);
+    else {
+      noEqReason = 'linear';
+      noEqSide = sol.side === 'high' ? 'excess' : sol.side === 'low' ? 'deficient' : null;
+      mr = { ...sticky('mr'), noEq: true };
+    }
   }
 
   if (band) carry.lr = mr.M;
 
   // Long run
-  let lr = flexible('lr');
+  let lr = mr.noEq ? null : flexible('lr', mr.P);
   if (!lr) lr = { ...mr, key: 'lr', noEq: true };
+  // When the medium run has no equilibrium, this says why:
+  //   'trap'     demand stays below Y* even at i = 0 (Lecture 5: liquidity trap)
+  //   'vertical' AD is vertical (M/P fixed, flat LM, investment independent of i)
+  //   'linear'   the linear model's limit (money demand would turn negative)
+  // and noEqSide whether demand is above ('excess') or below ('deficient') Y*.
+  const needsNegativeRate = noEqReason === 'trap';
 
   const snapshots = [t0, sr, mr, lr];
+  // A rate target that needs a negative money stock cannot be reached.
+  if (rateTarget && !rateTarget.feasible) for (const sn of snapshots.slice(1)) sn.valid = false;
   // External debt (2022-2023 exams): each horizon adds the trade deficit of
   // that period, so debt follows the level of TB, not its change.
   let debt = 0;
@@ -730,6 +789,8 @@ export function buildScenario(rawParams, settings, rawShocks) {
     expectOnly,
     rateTarget,
     needsNegativeRate,
+    noEqReason: lr.noEq ? noEqReason || 'linear' : null,
+    noEqSide: lr.noEq ? noEqSide : null,
     activeShocks: SHOCK_DEFS.filter((d) => shocks[d.id] !== 0).map((d) => d.id),
     domains: computeDomains(snapshots, base),
   };
@@ -794,7 +855,8 @@ export function supplyCurves(scenario, step) {
   const P0 = t0.P;
   const Ystar = step === 0 ? t0.Ystar : lr.Ystar;
   const wagePush = Math.abs(mr.Pe - P0) > 1e-9; // contracts re-signed at a different wage (W shock)
-  const pushLabel = mr.Pe > P0 ? 'AS(W↑)' : 'AS(W↓)';
+  // The curve for the new contracts; its direction is not written in the label (it is the quiz's answer).
+  const pushLabel = "AS'";
   const out = [];
   const add = (desc, active) => out.push({ ...desc, status: active ? 'active' : 'context' });
 

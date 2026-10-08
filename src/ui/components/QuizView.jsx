@@ -80,7 +80,7 @@ function PredictQuestion({ q, onAnswer, answered, onShow }) {
         <div className="rounded-lg bg-paper p-3">
           <p className="text-[12px] font-semibold text-muted">המשק</p>
           <p className="text-[14.5px] font-semibold text-ink">{q.contextLabel}</p>
-          <p className="mt-0.5 text-[12px] text-muted">מצב מוצא בשיווי משקל ארוך טווח</p>
+          <p className="mt-0.5 text-[12px] text-muted">מצב מוצא: שיווי משקל בתעסוקה מלאה (Y = Y*)</p>
         </div>
         <div className="rounded-lg bg-paper p-3">
           <p className="text-[12px] font-semibold text-muted">הזעזוע</p>

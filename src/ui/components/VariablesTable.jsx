@@ -118,6 +118,29 @@ export default function VariablesTable({ scenario, step }) {
           </tbody>
         </table>
       </div>
+      <TableNotes signs={signs} step={step} />
     </section>
+  );
+}
+
+/** Caveats about the realizations behind the signs. */
+function TableNotes({ signs, step }) {
+  const partial = [1, 2, 3].filter((st) => st <= step && signs.noEq[st] === 'some');
+  const notes = [];
+  if (partial.length) {
+    notes.push(
+      `${partial.map((st) => HORIZONS[st].inLabel).join(', ')}: בחלק מהשיפועים אין שיווי משקל (למשל מלכודת נזילות). הסימנים מתייחסים למקרים שבהם יש.`,
+    );
+  }
+  if (signs.trapSome && step > 0) {
+    notes.push('זעזועים גדולים במיוחד מורידים את הריבית לרצפת האפס. מלכודת נזילות היא מקרה נפרד בקורס (הרצאה 5), ולכן המקרים האלה לא נכללים בסימנים.');
+  }
+  if (!notes.length) return null;
+  return (
+    <div className="space-y-1 border-t border-rule px-4 py-2 text-[11.5px] leading-5 text-muted">
+      {notes.map((t) => (
+        <p key={t}>{t}</p>
+      ))}
+    </div>
   );
 }

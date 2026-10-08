@@ -3,9 +3,9 @@ import { HORIZONS } from '../../engine/index.js';
 import { HORIZON_COLORS, STEP_KEYS } from '../theme.js';
 
 const STICKY = {
-  keynesian: ['שיווי משקל ארוך טווח', 'P ו-W קבועים, Y לפי הביקוש', 'P מתעדכן, W עדיין קבוע', 'W מתעדכן, Y חוזר ל-Y*'],
-  extreme: ['שיווי משקל ארוך טווח', 'P ו-W קבועים, Y לפי הביקוש', 'AS אופקית: P עדיין קבוע', 'W מתעדכן, Y חוזר ל-Y*'],
-  classical: ['שיווי משקל ארוך טווח', 'מחירים ושכר גמישים מיד', 'אותו שיווי משקל', 'אותו שיווי משקל'],
+  keynesian: ['שיווי משקל: Y = Y*', 'P ו-W קבועים, Y לפי הביקוש', 'P מתעדכן, W עדיין קבוע', 'W מתעדכן, Y חוזר ל-Y*'],
+  extreme: ['שיווי משקל: Y = Y*', 'P ו-W קבועים, Y לפי הביקוש', 'AS אופקית: P עדיין קבוע', 'W מתעדכן, Y חוזר ל-Y*'],
+  classical: ['שיווי משקל: Y = Y*', 'מחירים ושכר גמישים מיד', 'אותו שיווי משקל', 'אותו שיווי משקל'],
 };
 
 export default function Timeline({ step, dispatch, school, hasShock }) {

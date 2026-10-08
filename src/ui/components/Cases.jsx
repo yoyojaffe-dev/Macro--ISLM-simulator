@@ -120,7 +120,7 @@ export function CaseBanner({ activeCase, step, dispatch }) {
       ) : watch.length ? (
         <div className="mt-2 rounded-lg px-3 py-2" style={{ background: `${color}12`, borderInlineStart: `4px solid ${color}` }}>
           <p className="text-[12px] font-bold" style={{ color }}>
-            מה לראות ב{HORIZONS[step].label}
+            מה לראות {HORIZONS[step].inLabel}
           </p>
           {watch.map((w, i) => (
             <p key={i} className="mt-1 text-[14px] leading-7 text-ink">

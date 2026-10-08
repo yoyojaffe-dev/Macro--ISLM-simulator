@@ -1,5 +1,5 @@
 import { Sigma } from 'lucide-react';
-import { CAL, HORIZONS, kappaOf, multipliers, regimeAt } from '../../engine/index.js';
+import { CAL, HORIZONS, kappaOf, regimeAt, activeAssumptions } from '../../engine/index.js';
 import { HORIZON_COLORS, fmt } from '../theme.js';
 import { Var, Num, SignContext } from './primitives.jsx';
 
@@ -26,10 +26,21 @@ export default function EquationsPanel({ scenario, step }) {
   const fixed = open && regimeAt(settings, s) === 'fixed';
   const band = open && settings.regime === 'band';
   const large = open && settings.size === 'large';
-  const mult = multipliers(params, settings, s);
   const signMap = step > 0 ? scenario.signs?.origin?.[step] : null;
   const h = HORIZONS[step];
   const school = settings.school;
+  const fixedLabor = activeAssumptions(settings).includes('fixedLabor');
+  const flatLM = Boolean(params.flatLM) && !open;
+  // Spending multiplier: 1/[1 − mps] with mps = c(1 − t) + δ + β (imports leak (1 − m) of absorption).
+  const mpsText = `c${params.t > 0 ? '(1 − t)' : ''}${params.delta > 0 ? ' + δ' : ''}${params.beta > 0 ? ' + β' : ''}`;
+  const compound = params.delta > 0 || params.beta > 0;
+  const multText = open
+    ? `(1 − m) / [1 − (1 − m)(${mpsText})]`
+    : compound
+      ? `1 / [1 − (${mpsText})]`
+      : params.t > 0
+        ? `1 / [1 − ${mpsText}]`
+        : '1 / (1 − c)';
 
   const asRow = (() => {
     if (school === 'classical') {
@@ -75,6 +86,19 @@ export default function EquationsPanel({ scenario, step }) {
         note: 'מחירים קשיחים: Y נקבע לפי הביקוש',
       };
     }
+    if (fixedLabor && step === 2) {
+      return {
+        general: (
+          <>
+            <Var k="Y" />
+            <Op>=</Op>
+            <Var k="Y*" />
+            <span className="mx-2 font-sans text-[12px] text-muted">(AS אנכית)</span>
+          </>
+        ),
+        note: 'הביקוש לעובדים קבוע: L = L*',
+      };
+    }
     return {
       general: (
         <>
@@ -85,7 +109,9 @@ export default function EquationsPanel({ scenario, step }) {
           <Var k="P" />
           <Op>/</Op>
           <Var k="Pe" />
-          <span className="mx-2 font-sans text-[12px] text-muted">{step === 3 || step === 0 ? '(Pᵉ = P ⇒ Y = Y*)' : '(Pᵉ נקבע בחוזה השכר)'}</span>
+          <span className="mx-2 font-sans text-[12px] text-muted">
+            {s.noEq ? '(אין שיווי משקל בטווח הזה)' : step === 3 || step === 0 ? '(Pᵉ = P ⇒ Y = Y*)' : '(Pᵉ נקבע בחוזה השכר)'}
+          </span>
         </>
       ),
       numeric: (
@@ -227,7 +253,7 @@ export default function EquationsPanel({ scenario, step }) {
                     <Var k="eps" /> <Op>−</Op> 1<Op>)</Op> <Op>+</Op> <Op>(</Op>
                     <Var k="m" />
                     <Op>/</Op>σ<Op>)</Op>
-                    <Var k="a" label="a*" />
+                    <Var k="aStar" noSign />
                   </>
                 ) : (
                   <>
@@ -282,7 +308,7 @@ export default function EquationsPanel({ scenario, step }) {
                   {' '}
                   <Op>+</Op> <Var k="NX" />
                   <Op>(</Op>
-                  <Var k="a" />, <Var k="a" label="a*" />, <Var k="eps" />
+                  <Var k="a" />, <Var k="aStar" />, <Var k="eps" />
                   <Op>)</Op>
                 </>
               )}
@@ -303,24 +329,33 @@ export default function EquationsPanel({ scenario, step }) {
         <Row
           name="LM: שוק הכסף"
           note={
-            fixed
-              ? 'שע״ח קבוע: M אנדוגני'
-              : scenario.rateTarget
-                ? 'ריבית יעד: M נקבע כך ש-i = ī'
-                : s.zlb
-                  ? 'רצפת אפס פעילה'
-                  : null
+            flatLM
+              ? 'הביקוש לכסף גמיש לחלוטין לריבית: LM אופקית, M ו-P לא מזיזים את i'
+              : fixed
+                ? 'שע״ח קבוע: M אנדוגני'
+                : scenario.rateTarget
+                  ? 'ריבית יעד: M נקבע כך ש-i = ī'
+                  : s.zlb
+                    ? 'רצפת אפס פעילה'
+                    : null
           }
           general={
-            <>
-              <Var k="M" />
-              <Op>/</Op>
-              <Var k="P" /> <Op>=</Op> <Var k="L0" /> <Op>+</Op> <Var k="k" />
-              <Op>·</Op>
-              <Var k="Y" /> <Op>−</Op> <Var k="h" />
-              <Op>·</Op>
-              <Var k="r" />
-            </>
+            flatLM ? (
+              <>
+                <Var k="r" /> <Op>=</Op> <Var k="r" noSign />
+                <sub>0</sub>
+              </>
+            ) : (
+              <>
+                <Var k="M" />
+                <Op>/</Op>
+                <Var k="P" /> <Op>=</Op> <Var k="L0" /> <Op>+</Op> <Var k="k" />
+                <Op>·</Op>
+                <Var k="Y" /> <Op>−</Op> <Var k="h" />
+                <Op>·</Op>
+                <Var k="r" />
+              </>
+            )
           }
           numeric={
             <>
@@ -337,13 +372,13 @@ export default function EquationsPanel({ scenario, step }) {
         />
         {open && (
           <Row
-            name={kap === Infinity ? 'CM: ניידות הון מלאה (UIP)' : 'BP: מאזן התשלומים'}
+            name={kap === Infinity ? 'CM: ניידות הון מלאה (UIRP)' : 'BP: מאזן התשלומים'}
             note={
               kap === Infinity
                 ? large
                   ? 'i* נקבע בשוק העולמי'
                   : scenario.shocks.Ee
-                    ? 'הציפיות דועכות: מלאות בטווח המיידי, חצי בקצר'
+                    ? 'הציפיות דועכות: מלאות בטווח המיידי, חלקיות בקצר, אפס בבינוני'
                     : 'בלי ציפיות לשינוי בשער: i = i*'
                 : `κ = ${fmt(kap, 0)}`
             }
@@ -409,7 +444,7 @@ export default function EquationsPanel({ scenario, step }) {
             note={s.band === 'inside' ? 'בתוך הרצועה' : s.band === 'low' ? 'בגבול התחתון: הבנק קונה מט״ח' : 'בגבול העליון: הבנק מוכר מט״ח'}
             general={
               <>
-                <Var k="e" label="E_low" /> <Op>≤</Op> <Var k="e" /> <Op>≤</Op> <Var k="e" label="E_high" />
+                <Var k="e" label="E_low" noSign /> <Op>≤</Op> <Var k="e" /> <Op>≤</Op> <Var k="e" label="E_high" noSign />
               </>
             }
             numeric={
@@ -471,18 +506,23 @@ export default function EquationsPanel({ scenario, step }) {
         <Row name="היצע מצרפי" note={asRow.note} general={asRow.general} numeric={asRow.numeric} />
         <Row
           name="מכפיל"
-          note="מכפיל ההוצאה הממשלתית בריבית קבועה"
+          note={
+            !open
+              ? 'מכפיל ההוצאה הממשלתית בריבית קבועה'
+              : large
+                ? 'בריבית ובשע״ח ריאלי קבועים'
+                : fixed
+                  ? 'שע״ח קבוע: i = i* ו-e קבוע בטווח המיידי, ולכן זה המכפיל בפועל'
+                  : 'בריבית ובשע״ח ריאלי קבועים. בשע״ח נייד e משתנה, וההשפעה בפועל על Y היא 0'
+          }
           general={
             <span className="text-[14px]">
-              ΔY/ΔG <Op>=</Op> {open ? '(1 − m) / [1 − (1 − m)(' : '1 / (1 − '}c{params.t > 0 ? '(1 − t)' : ''}
-              {params.delta > 0 ? ' + δ' : ''}
-              {params.beta > 0 ? ' + β' : ''}
-              {open ? ')]' : ')'}
+              ΔY/ΔG <Op>=</Op> {multText}
             </span>
           }
         />
         <p className="pt-2 text-[11.5px] leading-5 text-muted">
-          החץ ליד כל משתנה הוא כיוון השינוי שלו ביחס למצב המוצא (? = תלוי בגודל השינויים). i היא הריבית הנומינלית חסרת הסיכון, כמו בשקפים. E הוא שער החליפין הנומינלי (מחיר יחידת מט״ח בשקלים) ו-e = E·P*/P הוא הריאלי, כמו בשקפים. TB הוא מאזן הסחר.
+          החץ ליד כל משתנה הוא כיוון השינוי שלו ביחס למצב המוצא (? = תלוי בגודל השינויים או בשיפועים). i היא הריבית הנומינלית חסרת הסיכון, כמו בשקפים. E הוא שער החליפין הנומינלי (מחיר יחידת מט״ח בשקלים) ו-e = E·P*/P הוא הריאלי, כמו בשקפים. TB הוא מאזן הסחר.
         </p>
       </div>
       </SignContext.Provider>

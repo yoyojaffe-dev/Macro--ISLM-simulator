@@ -1,0 +1,1474 @@
+[
+ {
+  "id": "L8-s8 Y^D(T)<0 under a peg (IS ∩ CM)",
+  "source": "Lecture 8, slides 8 (Y^D signs) and 12 (IS ∩ CM, LM follows IS); M/Res via slide 11 mechanism (derived)",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "fixed"
+  },
+  "shocks": {
+   "T": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "-",
+    "C": "-",
+    "r": "=",
+    "e": "=",
+    "eps": "=",
+    "P": "=",
+    "M": "-",
+    "reservesDelta": "-"
+   }
+  }
+ },
+ {
+  "id": "L8-s8 Y^D((Y-T)^F)>0 under a peg",
+  "source": "Lecture 8, slides 8 and 12; M/Res via slide 11 mechanism (derived)",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "fixed"
+  },
+  "shocks": {
+   "C0": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "C": "+",
+    "r": "=",
+    "e": "=",
+    "M": "+",
+    "reservesDelta": "+"
+   }
+  }
+ },
+ {
+  "id": "L8-s8 Y^D(MPKe)>0 under a peg",
+  "source": "Lecture 8, slides 8 and 12 (derived)",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "fixed"
+  },
+  "shocks": {
+   "I0": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "I": "+",
+    "r": "=",
+    "e": "=",
+    "M": "+",
+    "reservesDelta": "+"
+   }
+  }
+ },
+ {
+  "id": "L8-s8 Y^D(a*)>0 under a peg",
+  "source": "Lecture 8, slides 7-8 (TB(a,a*,e) = (-,+,+); Y^D(a*) +) and 12 (derived)",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "fixed"
+  },
+  "shocks": {
+   "aStar": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "r": "=",
+    "e": "=",
+    "eps": "=",
+    "M": "+",
+    "reservesDelta": "+"
+   }
+  }
+ },
+ {
+  "id": "L8-s12/s16 expected depreciation under a peg: CM up, Y down along IS",
+  "source": "Lecture 8, slide 12 (equilibrium = IS ∩ CM, CM: i = i* + ΔEᵉ) and slide 16 (UIP); Y^D(i) < 0 (slide 8)",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "fixed"
+  },
+  "shocks": {
+   "Ee": 1
+  },
+  "results": {
+   "imm0": {
+    "r": "+",
+    "Y": "-",
+    "I": "-",
+    "e": "=",
+    "P": "=",
+    "M": "-",
+    "reservesDelta": "-"
+   }
+  },
+  "note": "M and reserves: derived (money demand falls at higher i and lower Y)"
+ },
+ {
+  "id": "L8-s10 monetary expansion under a peg (full)",
+  "source": "Lecture 8, slide 10 (money stock returns to original level), slide 14 (monetary change does not shift AD)",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "fixed"
+  },
+  "shocks": {
+   "M": 1
+  },
+  "results": {
+   "imm0": {
+    "M": "=",
+    "MP": "=",
+    "r": "=",
+    "Y": "=",
+    "C": "=",
+    "I": "=",
+    "NX": "=",
+    "e": "=",
+    "eps": "=",
+    "P": "=",
+    "reservesDelta": "-"
+   },
+   "sr0": {
+    "Y": "=",
+    "P": "=",
+    "M": "="
+   },
+   "mr0": {
+    "Y": "=",
+    "P": "=",
+    "M": "="
+   }
+  }
+ },
+ {
+  "id": "L8-s10 monetary contraction under a peg (symmetric)",
+  "source": "Lecture 8, slide 10 (derived, opposite direction)",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "fixed"
+  },
+  "shocks": {
+   "M": -1
+  },
+  "results": {
+   "imm0": {
+    "M": "=",
+    "r": "=",
+    "Y": "=",
+    "reservesDelta": "+"
+   },
+   "mr0": {
+    "Y": "=",
+    "P": "="
+   }
+  }
+ },
+ {
+  "id": "L8-s12 money-demand shock under a peg is accommodated",
+  "source": "Lecture 8, slide 12 (\"no control over monetary policy\"; LM follows IS) (derived)",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "fixed"
+  },
+  "shocks": {
+   "L0": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "=",
+    "r": "=",
+    "e": "=",
+    "M": "+",
+    "reservesDelta": "+"
+   },
+   "mr0": {
+    "Y": "=",
+    "P": "="
+   }
+  }
+ },
+ {
+  "id": "L8-s11/s14 fiscal expansion under a peg (full)",
+  "source": "Lecture 8, slide 11 (pressure to buy shekels, M grows automatically) and slide 14 (SR: Y up P up; MR: P up, Y back)",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "fixed"
+  },
+  "shocks": {
+   "G": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "r": "=",
+    "M": "+",
+    "MP": "+",
+    "reservesDelta": "+",
+    "e": "=",
+    "eps": "=",
+    "P": "=",
+    "I": "=",
+    "C": "+"
+   },
+   "srimm": {
+    "P": "+",
+    "Y": "-"
+   },
+   "sr0": {
+    "Y": "+",
+    "P": "+"
+   },
+   "mrsr": {
+    "P": "+",
+    "Y": "-",
+    "w": "+"
+   },
+   "mr0": {
+    "Y": "=",
+    "P": "+"
+   }
+  },
+  "note": "C + in imm0 follows the learning-center convention C = C(Y - T)"
+ },
+ {
+  "id": "L8-s15 unexpected devaluation (with M and reserves)",
+  "source": "Lecture 8, slide 15; M/Res via slide 11-12 mechanism (derived)",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "fixed"
+  },
+  "shocks": {
+   "e": 1
+  },
+  "results": {
+   "imm0": {
+    "e": "+",
+    "eps": "+",
+    "Y": "+",
+    "r": "=",
+    "P": "=",
+    "NX": "+",
+    "M": "+",
+    "reservesDelta": "+"
+   },
+   "srimm": {
+    "P": "+",
+    "Y": "-",
+    "eps": "-",
+    "e": "="
+   },
+   "sr0": {
+    "P": "+",
+    "Y": "+"
+   },
+   "mrsr": {
+    "w": "+",
+    "P": "+",
+    "Y": "-",
+    "eps": "-"
+   },
+   "mr0": {
+    "e": "+",
+    "eps": "=",
+    "P": "+",
+    "Y": "="
+   }
+  }
+ },
+ {
+  "id": "L8-s15 revaluation (opposite of devaluation)",
+  "source": "Lecture 8, slide 15 (derived, opposite direction)",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "fixed"
+  },
+  "shocks": {
+   "e": -1
+  },
+  "results": {
+   "imm0": {
+    "e": "-",
+    "eps": "-",
+    "Y": "-",
+    "r": "="
+   },
+   "srimm": {
+    "P": "-",
+    "Y": "+"
+   },
+   "mr0": {
+    "e": "-",
+    "eps": "=",
+    "P": "-",
+    "Y": "="
+   }
+  }
+ },
+ {
+  "id": "L9-s3/s8 monetary expansion under a float (full)",
+  "source": "Lecture 9, slide 3 (E up, e up, TB up), slide 8 (e up then down; E up then \"rises or falls\"; M/P back; e back)",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "floating"
+  },
+  "shocks": {
+   "M": 1
+  },
+  "results": {
+   "imm0": {
+    "M": "+",
+    "r": "=",
+    "Y": "+",
+    "e": "+",
+    "eps": "+",
+    "NX": "+",
+    "I": "=",
+    "C": "+",
+    "P": "=",
+    "reservesDelta": "="
+   },
+   "srimm": {
+    "P": "+",
+    "Y": "-",
+    "eps": "-",
+    "MP": "-",
+    "r": "=",
+    "e": "?",
+    "M": "="
+   },
+   "sr0": {
+    "P": "+",
+    "Y": "+"
+   },
+   "mrsr": {
+    "w": "+",
+    "P": "+",
+    "Y": "-",
+    "eps": "-",
+    "MP": "-",
+    "r": "=",
+    "e": "?"
+   },
+   "mr0": {
+    "Y": "=",
+    "P": "+",
+    "MP": "=",
+    "eps": "=",
+    "r": "=",
+    "e": "+",
+    "M": "+",
+    "w": "+"
+   }
+  }
+ },
+ {
+  "id": "L9-s3 / L10-s6 monetary contraction under a float: appreciation",
+  "source": "Lecture 9, slide 3 (opposite direction); Lecture 10, slide 6 (Fig. 28.5: tightening strengthens the currency)",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "floating"
+  },
+  "shocks": {
+   "M": -1
+  },
+  "results": {
+   "imm0": {
+    "e": "-",
+    "eps": "-",
+    "NX": "-",
+    "Y": "-",
+    "r": "="
+   },
+   "mr0": {
+    "Y": "=",
+    "P": "-",
+    "eps": "="
+   }
+  }
+ },
+ {
+  "id": "L9-s4/s7 fiscal expansion under a float (full)",
+  "source": "Lecture 9, slide 4 (appreciation, TB falls and cancels the spending rise), slide 7 (no AD shift; TB absorbs)",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "floating"
+  },
+  "shocks": {
+   "G": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "=",
+    "r": "=",
+    "M": "=",
+    "e": "-",
+    "eps": "-",
+    "NX": "-",
+    "a": "+",
+    "C": "=",
+    "I": "=",
+    "reservesDelta": "=",
+    "P": "="
+   },
+   "sr0": {
+    "Y": "=",
+    "P": "="
+   },
+   "mr0": {
+    "Y": "=",
+    "P": "=",
+    "NX": "-",
+    "eps": "-"
+   }
+  }
+ },
+ {
+  "id": "L9-s7 tax cut under a float (composition only)",
+  "source": "Lecture 9, slide 7",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "floating"
+  },
+  "shocks": {
+   "T": -1
+  },
+  "results": {
+   "imm0": {
+    "Y": "=",
+    "C": "+",
+    "NX": "-",
+    "e": "-",
+    "eps": "-",
+    "r": "="
+   },
+   "sr0": {
+    "Y": "=",
+    "P": "="
+   },
+   "mr0": {
+    "Y": "=",
+    "P": "="
+   }
+  }
+ },
+ {
+  "id": "L9-s7 consumer confidence under a float (IS shifter, derived)",
+  "source": "Lecture 9, slides 4 and 7 applied to Y^D((Y-T)^F) (derived)",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "floating"
+  },
+  "shocks": {
+   "C0": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "=",
+    "C": "+",
+    "NX": "-",
+    "e": "-",
+    "r": "="
+   },
+   "mr0": {
+    "Y": "=",
+    "P": "="
+   }
+  }
+ },
+ {
+  "id": "L9-s7 investor confidence under a float (IS shifter, derived)",
+  "source": "Lecture 9, slides 4 and 7 applied to Y^D(MPKe) (derived)",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "floating"
+  },
+  "shocks": {
+   "I0": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "=",
+    "I": "+",
+    "NX": "-",
+    "e": "-",
+    "r": "="
+   },
+   "mr0": {
+    "Y": "=",
+    "P": "="
+   }
+  }
+ },
+ {
+  "id": "L9-s7 money-demand rise under a float (monetary shock shifts AD, derived)",
+  "source": "Lecture 9, slide 7 (monetary change shifts AD like in a closed economy) (derived)",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "floating"
+  },
+  "shocks": {
+   "L0": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "-",
+    "e": "-",
+    "eps": "-",
+    "r": "=",
+    "NX": "-"
+   },
+   "mr0": {
+    "Y": "=",
+    "P": "-"
+   }
+  }
+ },
+ {
+  "id": "L9-s6 AD under a float: P up => M/P down => LM left => Y down (wage push)",
+  "source": "Lecture 9, slide 6 (diagram) and slide 8 (E \"rises or falls\" when P moves)",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "floating"
+  },
+  "shocks": {
+   "W": 1
+  },
+  "results": {
+   "sr0": {
+    "P": "+",
+    "Y": "-",
+    "MP": "-",
+    "r": "=",
+    "eps": "-",
+    "NX": "-",
+    "e": "?"
+   },
+   "mr0": {
+    "Y": "=",
+    "P": "="
+   }
+  },
+  "note": "diagram draws IS(E1 P*/P1) left of IS(E0 P*/P1), i.e. E1 < E0, but slide 8 states E can rise or fall"
+ },
+ {
+  "id": "L10-s6 monetary tightening in a large economy raises i and appreciates",
+  "source": "Lecture 10, slide 6 (Fig. 28.5, US tightening raises the domestic rate, the dollar appreciates)",
+  "settings": {
+   "economy": "open",
+   "size": "large",
+   "regime": "floating"
+  },
+  "shocks": {
+   "M": -1
+  },
+  "results": {
+   "imm0": {
+    "r": "+",
+    "e": "-"
+   }
+  }
+ },
+ {
+  "id": "L12-s3/s4 world rate up under a float (full)",
+  "source": "Lecture 12, slides 3-4",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "floating"
+  },
+  "shocks": {
+   "rStar": 1
+  },
+  "results": {
+   "imm0": {
+    "r": "+",
+    "e": "+",
+    "eps": "+",
+    "NX": "+",
+    "Y": "+",
+    "M": "=",
+    "MP": "=",
+    "reservesDelta": "=",
+    "P": "="
+   },
+   "srimm": {
+    "P": "+",
+    "Y": "-",
+    "MP": "-"
+   },
+   "sr0": {
+    "P": "+",
+    "Y": "+"
+   },
+   "mrsr": {
+    "P": "+",
+    "Y": "-",
+    "MP": "-"
+   },
+   "mr0": {
+    "Y": "=",
+    "P": "+",
+    "MP": "-",
+    "r": "+"
+   }
+  }
+ },
+ {
+  "id": "L12-s3/s4 world rate down under a float (opposite)",
+  "source": "Lecture 12, slides 3-4 (derived, opposite direction; consistent with LC6 Q2)",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "floating"
+  },
+  "shocks": {
+   "rStar": -1
+  },
+  "results": {
+   "imm0": {
+    "r": "-",
+    "e": "-",
+    "eps": "-",
+    "NX": "-",
+    "Y": "-",
+    "I": "+"
+   },
+   "mr0": {
+    "Y": "=",
+    "P": "-",
+    "MP": "+",
+    "r": "-"
+   }
+  }
+ },
+ {
+  "id": "L12-s4 expected depreciation under a float: i > i*",
+  "source": "Lecture 12, slide 4 ((ΔE)^e > 0 => i > i*)",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "floating"
+  },
+  "shocks": {
+   "Ee": 1
+  },
+  "results": {
+   "imm0": {
+    "r": "+"
+   },
+   "mr0": {
+    "r": "=",
+    "Y": "="
+   }
+  }
+ },
+ {
+  "id": "L12-s5/s6 foreign prices up under a float: full insulation",
+  "source": "Lecture 12, slides 5-6 (appreciation so that e is unchanged; float insulates the economy)",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "floating"
+  },
+  "shocks": {
+   "Pstar": 1
+  },
+  "results": {
+   "imm0": {
+    "e": "-",
+    "eps": "=",
+    "Y": "=",
+    "r": "=",
+    "NX": "=",
+    "C": "=",
+    "I": "=",
+    "MP": "=",
+    "P": "=",
+    "M": "="
+   },
+   "sr0": {
+    "Y": "=",
+    "P": "=",
+    "eps": "="
+   },
+   "mr0": {
+    "Y": "=",
+    "P": "=",
+    "eps": "=",
+    "e": "-"
+   }
+  }
+ },
+ {
+  "id": "L12-s5/s6 foreign prices down under a float (opposite)",
+  "source": "Lecture 12, slides 5-6 (derived, opposite direction)",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "floating"
+  },
+  "shocks": {
+   "Pstar": -1
+  },
+  "results": {
+   "imm0": {
+    "e": "+",
+    "eps": "=",
+    "Y": "=",
+    "NX": "="
+   },
+   "mr0": {
+    "Y": "=",
+    "P": "="
+   }
+  }
+ },
+ {
+  "id": "L12-s6 foreign absorption up under a float",
+  "source": "Lecture 12, slide 6 (real rate changes, output does not, like a fiscal change under a float); TB and a \"=\" derived from Y = a + TB with Y and i unchanged",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "floating"
+  },
+  "shocks": {
+   "aStar": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "=",
+    "r": "=",
+    "eps": "-",
+    "e": "-",
+    "NX": "=",
+    "a": "="
+   },
+   "mr0": {
+    "Y": "=",
+    "P": "=",
+    "eps": "-"
+   }
+  }
+ },
+ {
+  "id": "L12-s6 foreign prices and absorption up together under a float",
+  "source": "Lecture 12, slide 6 (\"changes in relative prices accompanied by changes in a* are not fully offset by the real rate, but output still does not change\")",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "floating"
+  },
+  "shocks": {
+   "Pstar": 1,
+   "aStar": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "=",
+    "r": "=",
+    "eps": "-",
+    "e": "-",
+    "NX": "="
+   },
+   "mr0": {
+    "Y": "=",
+    "P": "="
+   }
+  }
+ },
+ {
+  "id": "L12-s7 fiscal expansion in a large economy",
+  "source": "Lecture 12, slide 7 (CM moves up: i1 = i1* > i0; IS shifts right then partly back)",
+  "settings": {
+   "economy": "open",
+   "size": "large",
+   "regime": "floating"
+  },
+  "shocks": {
+   "G": 1
+  },
+  "results": {
+   "imm0": {
+    "r": "+",
+    "rStar": "+",
+    "Y": "+",
+    "e": "-"
+   }
+  }
+ },
+ {
+  "id": "L12-s8 monetary expansion in a large economy",
+  "source": "Lecture 12, slide 8 (CM moves down: i1 = i1* < i0; LM right; Y up)",
+  "settings": {
+   "economy": "open",
+   "size": "large",
+   "regime": "floating"
+  },
+  "shocks": {
+   "M": 1
+  },
+  "results": {
+   "imm0": {
+    "r": "-",
+    "rStar": "-",
+    "Y": "+",
+    "e": "+"
+   }
+  }
+ },
+ {
+  "id": "L12-s9/s10 monetary expansion abroad",
+  "source": "Lecture 12, slides 9-10 (i* falls; foreign depreciation = home appreciation; home Y falls along LM)",
+  "settings": {
+   "economy": "open",
+   "size": "large",
+   "regime": "floating"
+  },
+  "shocks": {
+   "Mf": 1
+  },
+  "results": {
+   "imm0": {
+    "rStar": "-",
+    "r": "-",
+    "e": "-",
+    "eps": "-",
+    "Y": "-",
+    "M": "="
+   }
+  }
+ },
+ {
+  "id": "L12-s10/s11 coordinated monetary expansion (home answers M* with M)",
+  "source": "Lecture 12, slide 10 (CM -> CM' -> CM'', LM -> LM', final Y above Y0) and slide 11 (coordination avoids currency wars)",
+  "settings": {
+   "economy": "open",
+   "size": "large",
+   "regime": "floating"
+  },
+  "shocks": {
+   "M": 1,
+   "Mf": 1
+  },
+  "fixedSizes": true,
+  "results": {
+   "imm0": {
+    "r": "-",
+    "rStar": "-",
+    "Y": "+",
+    "e": "="
+   }
+  },
+  "note": "e \"=\" is the symmetric (equal-size, equal-shock) reading of \"coordinated\""
+ },
+ {
+  "id": "LC6 Q1 official key (M up, float)",
+  "source": "Learning center 6 solutions (file 3bd509dd, p.1)",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "floating"
+  },
+  "shocks": {
+   "M": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "C": "+",
+    "G": "=",
+    "I": "=",
+    "M": "+",
+    "P": "=",
+    "MP": "+",
+    "w": "=",
+    "wP": "=",
+    "eps": "+",
+    "NX": "+"
+   },
+   "srimm": {
+    "Y": "-",
+    "C": "-",
+    "G": "=",
+    "I": "=",
+    "M": "=",
+    "P": "+",
+    "MP": "-",
+    "w": "=",
+    "wP": "-",
+    "eps": "-",
+    "NX": "-"
+   },
+   "sr0": {
+    "Y": "+",
+    "C": "+",
+    "G": "=",
+    "I": "=",
+    "M": "+",
+    "P": "+",
+    "MP": "+",
+    "w": "=",
+    "wP": "-",
+    "eps": "+",
+    "NX": "+"
+   },
+   "mrsr": {
+    "Y": "-",
+    "C": "-",
+    "G": "=",
+    "I": "=",
+    "M": "=",
+    "P": "+",
+    "MP": "-",
+    "w": "+",
+    "wP": "+",
+    "eps": "-",
+    "NX": "-"
+   },
+   "mr0": {
+    "Y": "=",
+    "C": "=",
+    "G": "=",
+    "I": "=",
+    "M": "+",
+    "P": "+",
+    "MP": "=",
+    "w": "+",
+    "wP": "=",
+    "eps": "=",
+    "NX": "="
+   }
+  }
+ },
+ {
+  "id": "LC6 Q2 official key (i* down, G cut, float)",
+  "source": "Learning center 6 solutions (file 3bd509dd, p.2)",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "floating"
+  },
+  "shocks": {
+   "rStar": -1,
+   "G": -1
+  },
+  "results": {
+   "imm0": {
+    "Y": "-",
+    "C": "-",
+    "G": "-",
+    "T": "=",
+    "I": "+",
+    "NX": "?",
+    "P": "=",
+    "MP": "=",
+    "e": "?",
+    "eps": "?",
+    "reservesDelta": "="
+   },
+   "srimm": {
+    "Y": "+",
+    "C": "+",
+    "G": "=",
+    "T": "=",
+    "I": "=",
+    "NX": "+",
+    "P": "-",
+    "MP": "+",
+    "e": "?",
+    "eps": "+",
+    "reservesDelta": "="
+   },
+   "mr0": {
+    "Y": "=",
+    "C": "=",
+    "G": "-",
+    "T": "=",
+    "I": "+",
+    "NX": "?",
+    "P": "-",
+    "MP": "+",
+    "e": "?",
+    "eps": "?",
+    "reservesDelta": "="
+   }
+  }
+ },
+ {
+  "id": "LC7 Q1.1 tax cut inside the band does not raise employment",
+  "source": "Learning center 7 solutions (file 42ed6a34, p.1, answer \"ב\"); premise: E does not reach a band edge",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "band",
+   "bandStart": "inside",
+   "bandType": "two"
+  },
+  "shocks": {
+   "T": -1
+  },
+  "givenSigns": {
+   "imm0": {
+    "reservesDelta": "="
+   },
+   "sr0": {
+    "reservesDelta": "="
+   }
+  },
+  "results": {
+   "imm0": {
+    "Y": "="
+   },
+   "sr0": {
+    "Y": "=",
+    "L": "="
+   }
+  }
+ },
+ {
+  "id": "LC7 Q1.1 lower money demand inside the band raises employment",
+  "source": "Learning center 7 solutions (file 42ed6a34, p.1, answer \"ב\"); premise: E does not reach a band edge",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "band",
+   "bandStart": "inside",
+   "bandType": "two"
+  },
+  "shocks": {
+   "L0": -1
+  },
+  "givenSigns": {
+   "imm0": {
+    "reservesDelta": "="
+   },
+   "sr0": {
+    "reservesDelta": "="
+   }
+  },
+  "results": {
+   "imm0": {
+    "Y": "+"
+   },
+   "sr0": {
+    "Y": "+",
+    "L": "+"
+   }
+  }
+ },
+ {
+  "id": "LC7 Q1.2 official key (money demand falls, band, E inside in the immediate run)",
+  "source": "Learning center 7 solutions (file 42ed6a34, p.1 table)",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "band",
+   "bandStart": "inside",
+   "bandType": "two"
+  },
+  "shocks": {
+   "L0": -1
+  },
+  "givenSigns": {
+   "imm0": {
+    "reservesDelta": "="
+   }
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "P": "=",
+    "G": "=",
+    "I": "=",
+    "C": "+",
+    "e": "+",
+    "eps": "+",
+    "NX": "+",
+    "M": "=",
+    "MP": "=",
+    "w": "=",
+    "wP": "=",
+    "reservesDelta": "="
+   },
+   "srimm": {
+    "Y": "-",
+    "P": "+",
+    "G": "=",
+    "I": "=",
+    "C": "-",
+    "e": "?",
+    "eps": "-",
+    "NX": "-",
+    "M": "?",
+    "MP": "-",
+    "w": "=",
+    "wP": "-",
+    "reservesDelta": "?"
+   },
+   "sr0": {
+    "Y": "+",
+    "P": "+",
+    "G": "=",
+    "I": "=",
+    "C": "+",
+    "e": "+",
+    "eps": "+",
+    "NX": "+",
+    "M": "?",
+    "MP": "-",
+    "w": "=",
+    "wP": "-",
+    "reservesDelta": "?"
+   },
+   "mrsr": {
+    "Y": "-",
+    "P": "+",
+    "G": "=",
+    "I": "=",
+    "C": "-",
+    "e": "?",
+    "eps": "-",
+    "NX": "-",
+    "M": "?",
+    "MP": "-",
+    "w": "+",
+    "wP": "+",
+    "reservesDelta": "?"
+   },
+   "mr0": {
+    "Y": "=",
+    "P": "+",
+    "G": "=",
+    "I": "=",
+    "C": "=",
+    "e": "+",
+    "eps": "=",
+    "NX": "=",
+    "M": "?",
+    "MP": "-",
+    "w": "+",
+    "wP": "=",
+    "reservesDelta": "?"
+   }
+  },
+  "note": "premise \"E does not reach an edge\" encoded as given: no intervention in the immediate run"
+ },
+ {
+  "id": "LC7 Q2 official key (lower edge raised above E)",
+  "source": "Learning center 7 solutions (file 42ed6a34, p.2 table; note: E stays in the band in the immediate run, may leave it later)",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "band",
+   "bandStart": "inside",
+   "bandType": "two"
+  },
+  "shocks": {
+   "bandLo": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "P": "=",
+    "C": "+",
+    "r": "=",
+    "e": "+",
+    "eps": "+",
+    "NX": "+",
+    "MP": "+",
+    "w": "=",
+    "wP": "=",
+    "reservesDelta": "+"
+   },
+   "srimm": {
+    "Y": "-",
+    "P": "+",
+    "C": "-",
+    "r": "=",
+    "e": "?",
+    "eps": "-",
+    "NX": "-",
+    "MP": "-",
+    "w": "=",
+    "wP": "-",
+    "reservesDelta": "?"
+   },
+   "mrsr": {
+    "Y": "-",
+    "P": "+",
+    "C": "-",
+    "r": "=",
+    "e": "?",
+    "eps": "-",
+    "NX": "-",
+    "MP": "-",
+    "w": "+",
+    "wP": "+",
+    "reservesDelta": "?"
+   }
+  }
+ },
+ {
+  "id": "LC8 Q1a official key (expectations, Y rose => expected depreciation)",
+  "source": "Learning center 8 solutions (file 872adf99, p.1 part א; 2020 B Q1)",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "floating"
+  },
+  "shocks": {
+   "Ee": 1
+  },
+  "givenSigns": {
+   "imm0": {
+    "Y": "+"
+   }
+  },
+  "results": {
+   "imm0": {
+    "I": "-",
+    "C": "+",
+    "NX": "+",
+    "e": "+",
+    "eps": "+",
+    "reservesDelta": "="
+   }
+  }
+ },
+ {
+  "id": "LC8 Q1b official key (expected depreciation of the large partner = expected appreciation at home)",
+  "source": "Learning center 8 solutions (file 872adf99, p.1 part ב)",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "floating"
+  },
+  "shocks": {
+   "Ee": -1
+  },
+  "results": {
+   "imm0": {
+    "I": "+",
+    "C": "-",
+    "NX": "-",
+    "e": "-",
+    "eps": "-",
+    "reservesDelta": "="
+   }
+  }
+ },
+ {
+  "id": "A1 peg k=0: G up, money demand ignores Y => M, reserves unchanged",
+  "settings": {
+   "economy": "open",
+   "regime": "fixed",
+   "assume": {
+    "noYMoney": true
+   }
+  },
+  "shocks": {
+   "G": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "M": "=",
+    "reservesDelta": "=",
+    "r": "="
+   },
+   "mr0": {
+    "Y": "=",
+    "P": "+",
+    "M": "+"
+   }
+  }
+ },
+ {
+  "id": "A2 peg k=0: expected depreciation lowers M",
+  "settings": {
+   "economy": "open",
+   "regime": "fixed",
+   "assume": {
+    "noYMoney": true
+   }
+  },
+  "shocks": {
+   "Ee": 1
+  },
+  "results": {
+   "imm0": {
+    "r": "+",
+    "Y": "-",
+    "M": "-",
+    "reservesDelta": "-"
+   }
+  }
+ },
+ {
+  "id": "A3 float, exports ignore a*: a* has no effect",
+  "settings": {
+   "economy": "open",
+   "regime": "floating",
+   "assume": {
+    "noExportA": true
+   }
+  },
+  "shocks": {
+   "aStar": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "=",
+    "e": "=",
+    "eps": "=",
+    "NX": "="
+   },
+   "mr0": {
+    "Y": "=",
+    "P": "=",
+    "e": "="
+   }
+  }
+ },
+ {
+  "id": "A4 peg, exports ignore a*: a* has no effect",
+  "settings": {
+   "economy": "open",
+   "regime": "fixed",
+   "assume": {
+    "noExportA": true
+   }
+  },
+  "shocks": {
+   "aStar": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "=",
+    "M": "=",
+    "NX": "="
+   },
+   "mr0": {
+    "Y": "=",
+    "P": "="
+   }
+  }
+ },
+ {
+  "id": "A5 float, fixed labor demand: M up => short run Y back at Y*",
+  "settings": {
+   "economy": "open",
+   "regime": "floating",
+   "assume": {
+    "fixedLabor": true
+   }
+  },
+  "shocks": {
+   "M": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "P": "="
+   },
+   "sr0": {
+    "Y": "=",
+    "P": "+",
+    "eps": "="
+   },
+   "mr0": {
+    "Y": "=",
+    "P": "+"
+   }
+  }
+ },
+ {
+  "id": "A6 float, CB keeps M/P fixed from the short run: M up",
+  "settings": {
+   "economy": "open",
+   "regime": "floating",
+   "assume": {
+    "realM": true
+   }
+  },
+  "shocks": {
+   "M": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "e": "+"
+   },
+   "srimm": {
+    "MP": "=",
+    "P": "+"
+   }
+  }
+ },
+ {
+  "id": "A7 peg + realM is ignored (not applicable)",
+  "settings": {
+   "economy": "open",
+   "regime": "fixed",
+   "assume": {
+    "realM": true
+   }
+  },
+  "shocks": {
+   "G": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+"
+   },
+   "mr0": {
+    "Y": "=",
+    "P": "+"
+   }
+  }
+ },
+ {
+  "id": "A8 band + noYMoney is ignored (applies only to a peg)",
+  "settings": {
+   "economy": "open",
+   "regime": "band",
+   "bandStart": "low",
+   "assume": {
+    "noYMoney": true
+   }
+  },
+  "shocks": {
+   "G": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "M": "+",
+    "reservesDelta": "+"
+   }
+  }
+ }
+]

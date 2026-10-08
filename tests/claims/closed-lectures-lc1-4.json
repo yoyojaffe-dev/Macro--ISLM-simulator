@@ -1,0 +1,1888 @@
+[
+ {
+  "id": "L2-p8 G+ at given i",
+  "source": "Lecture 2, slide 8 (Y = 750 − 50i + 5G − 4T: raising G by 1 raises demand by 5); slides 10, 13, 15 (IS shifts right at i0: Y0 → Y1)",
+  "settings": {
+   "economy": "closed",
+   "assume": {
+    "flatLM": true
+   }
+  },
+  "shocks": {
+   "G": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "i": "=",
+    "C": "+",
+    "I": "=",
+    "G": "+",
+    "T": "=",
+    "P": "="
+   }
+  },
+  "note": "'i given' (Keynesian cross) encoded with flatLM. C+ from C = C0 + c(Y−T) (slide 9) with Y up and T fixed; I = I0 − bi with i fixed."
+ },
+ {
+  "id": "L2-p10 G− at given i",
+  "source": "Lecture 2, slide 10 (G → G + ΔG ⇒ Y → Y + ΔG/(1−c), any sign of ΔG)",
+  "settings": {
+   "economy": "closed",
+   "assume": {
+    "flatLM": true
+   }
+  },
+  "shocks": {
+   "G": -1
+  },
+  "results": {
+   "imm0": {
+    "Y": "-",
+    "i": "=",
+    "C": "-",
+    "I": "="
+   }
+  }
+ },
+ {
+  "id": "L2-p8 T cut at given i",
+  "source": "Lecture 2, slide 8 (cutting T by 1 raises demand by 4); slide 11 (tax multiplier c/(1−c)); slide 12",
+  "settings": {
+   "economy": "closed",
+   "assume": {
+    "flatLM": true
+   }
+  },
+  "shocks": {
+   "T": -1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "i": "=",
+    "C": "+",
+    "I": "=",
+    "T": "-"
+   }
+  }
+ },
+ {
+  "id": "L2-p11 T up at given i",
+  "source": "Lecture 2, slide 11 (T → T + ΔT ⇒ Y → Y − c/(1−c)·ΔT)",
+  "settings": {
+   "economy": "closed",
+   "assume": {
+    "flatLM": true
+   }
+  },
+  "shocks": {
+   "T": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "-",
+    "i": "=",
+    "C": "-",
+    "I": "="
+   }
+  }
+ },
+ {
+  "id": "L2-p8/p11 balanced budget at given i",
+  "source": "Lecture 2, slide 8 (G +1 and T +1 raise demand by 1 without changing the deficit); slide 11 (Y → Y + ΔG)",
+  "settings": {
+   "economy": "closed",
+   "assume": {
+    "flatLM": true
+   }
+  },
+  "shocks": {
+   "G": 1,
+   "T": 1
+  },
+  "fixedSizes": true,
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "i": "=",
+    "C": "=",
+    "I": "=",
+    "G": "+",
+    "T": "+"
+   }
+  },
+  "note": "ΔY = ΔG = ΔT, so Y − T and hence C are unchanged."
+ },
+ {
+  "id": "L2-p11 C0 up at given i",
+  "source": "Lecture 2, slide 11 (raising C0 has the same effect 1/(1−c)); slide 7 C = C(Y−T, (Y−T)^F) = C(+,+)",
+  "settings": {
+   "economy": "closed",
+   "assume": {
+    "flatLM": true
+   }
+  },
+  "shocks": {
+   "C0": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "i": "=",
+    "C": "+",
+    "I": "="
+   }
+  }
+ },
+ {
+  "id": "L2-p11 C0 down at given i",
+  "source": "Lecture 2, slide 11; Learning center 1 Q1d (ΔC0 = −X shifts IS left)",
+  "settings": {
+   "economy": "closed",
+   "assume": {
+    "flatLM": true
+   }
+  },
+  "shocks": {
+   "C0": -1
+  },
+  "results": {
+   "imm0": {
+    "Y": "-",
+    "i": "=",
+    "C": "-",
+    "I": "="
+   }
+  }
+ },
+ {
+  "id": "L2-p11 I0 (MPKe) up at given i",
+  "source": "Lecture 2, slide 11 (raising I0 has the same effect); slide 7 I = I(i, MPKe) = I(−,+)",
+  "settings": {
+   "economy": "closed",
+   "assume": {
+    "flatLM": true
+   }
+  },
+  "shocks": {
+   "I0": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "i": "=",
+    "I": "+",
+    "C": "+"
+   }
+  }
+ },
+ {
+  "id": "L2-p11 I0 (MPKe) down at given i",
+  "source": "Lecture 2, slide 11",
+  "settings": {
+   "economy": "closed",
+   "assume": {
+    "flatLM": true
+   }
+  },
+  "shocks": {
+   "I0": -1
+  },
+  "results": {
+   "imm0": {
+    "Y": "-",
+    "i": "=",
+    "I": "-",
+    "C": "-"
+   }
+  }
+ },
+ {
+  "id": "L3-p12 M up: LM shifts down, i falls",
+  "source": "Lecture 3, slide 12 (LM(M1/P0) below LM(M0/P0): i1 < i0); slide 13 (CB adds money, banks cut rates, prices fixed); Lecture 5 slide 4 (AD(M1) right of AD(M0): Y up at P0)",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "M": 1
+  },
+  "results": {
+   "imm0": {
+    "i": "-",
+    "Y": "+",
+    "P": "=",
+    "M": "+",
+    "M/P": "+",
+    "I": "+",
+    "C": "+"
+   }
+  },
+  "note": "I+ from I = I0 − bi with i down; C+ from Y up."
+ },
+ {
+  "id": "L3-p15 G up with LM: partial crowding out",
+  "source": "Lecture 3, slide 15 (Y↑ → Md↑ → i↑ → I↓; Y0 < Y2 < Y1, i2 > i0); slide 18 (AD shifts right, at P0 Y1 > Y0)",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "G": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "i": "+",
+    "I": "-",
+    "C": "+",
+    "P": "=",
+    "M": "=",
+    "M/P": "=",
+    "G": "+"
+   }
+  }
+ },
+ {
+  "id": "L3-p15 G down with LM",
+  "source": "Lecture 3, slide 15 (mirror)",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "G": -1
+  },
+  "results": {
+   "imm0": {
+    "Y": "-",
+    "i": "-",
+    "I": "+",
+    "C": "-",
+    "P": "="
+   }
+  }
+ },
+ {
+  "id": "L3-p16/18 (Y−T)^F up in IS-LM",
+  "source": "Lecture 3, slides 16, 18-19 ((Y−T)^F is an IS/AD shifter; IS right → Y up, i up at P0)",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "C0": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "i": "+",
+    "I": "-",
+    "C": "+",
+    "P": "="
+   }
+  }
+ },
+ {
+  "id": "L3-p16/18 MPKe up in IS-LM",
+  "source": "Lecture 3, slides 16, 18-19 (MPKe is an IS/AD shifter)",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "I0": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "i": "+",
+    "I": "+",
+    "C": "+",
+    "P": "="
+   }
+  },
+  "note": "I+ because ΔI = ΔY − ΔC = (1−c)ΔY > 0 (G fixed)."
+ },
+ {
+  "id": "L3-p16/18 T up in IS-LM",
+  "source": "Lecture 3, slides 16, 18-19 (T is an IS/AD shifter); Learning center 1 Q1e (IS left)",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "T": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "-",
+    "i": "-",
+    "C": "-",
+    "I": "+",
+    "P": "="
+   }
+  }
+ },
+ {
+  "id": "L3-p16 T cut in IS-LM",
+  "source": "Lecture 3, slides 15-16",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "T": -1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "i": "+",
+    "C": "+",
+    "I": "-",
+    "P": "="
+   }
+  }
+ },
+ {
+  "id": "L4-p14/15 demand expansion: P > Pe gives L > L*, Y > Y*",
+  "source": "Lecture 4, slide 14 (w0/P1 < w0/Pe, L1 > L*); slide 15 (P1 > Pe ⇒ Y1 > Y*); slide 16-17 (Y/Y* = P/Pe)",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "G": 1
+  },
+  "results": {
+   "sr0": {
+    "P": "+",
+    "Y": "+",
+    "L": "+",
+    "W/P": "-",
+    "W": "="
+   }
+  }
+ },
+ {
+  "id": "L4-p14/15 demand contraction: P < Pe gives L < L*, Y < Y*",
+  "source": "Lecture 4, slides 14-15 (P2 < Pe ⇒ L2 < L*, Y2 < Y*)",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "M": -1
+  },
+  "results": {
+   "sr0": {
+    "P": "-",
+    "Y": "-",
+    "L": "-",
+    "W/P": "+",
+    "W": "="
+   }
+  }
+ },
+ {
+  "id": "L4-p19/20 wage rise: AS shifts left",
+  "source": "Lecture 4, slide 19 (a rise in the wage, e.g. on expected prices, lowers aggregate supply); slide 20 (AS(w1 > w0) left of AS(w0)); slide 14 (L on labor demand)",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "W": 1
+  },
+  "results": {
+   "sr0": {
+    "Y": "-",
+    "P": "+",
+    "W": "+",
+    "W/P": "+",
+    "L": "-",
+    "i": "+",
+    "I": "-"
+   }
+  },
+  "note": "P+ and Y− from AD-AS (AS left along a downward AD, Lecture 3 slide 17); W/P+ and L− from labor demand (slide 14); i+, I− via M/P down (Lecture 3 slide 17)."
+ },
+ {
+  "id": "L4-p19/20 wage cut: AS shifts right",
+  "source": "Lecture 4, slides 19-20 (mirror)",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "W": -1
+  },
+  "results": {
+   "sr0": {
+    "Y": "+",
+    "P": "-",
+    "W": "-",
+    "W/P": "-",
+    "L": "+",
+    "i": "-",
+    "I": "+"
+   }
+  }
+ },
+ {
+  "id": "L4-p19/20 capital up: AS shifts right",
+  "source": "Lecture 4, slide 19 (higher K raises AS: same P, more Y); slide 20 (AS(K1 > K0) right)",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "K": 1
+  },
+  "results": {
+   "sr0": {
+    "Y": "+",
+    "P": "-"
+   },
+   "mr0": {
+    "Y": "+",
+    "P": "-",
+    "Ystar": "+"
+   }
+  },
+  "note": "K is an 'inCourse:false' shock in the app (Lecture 5 slide 3 holds K fixed at every horizon)."
+ },
+ {
+  "id": "L4-p19 / L5-p9 technology up",
+  "source": "Lecture 4, slide 19 (higher A raises AS); Lecture 5, slide 9 (in the long run only AS changes, essentially A, move output)",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "A": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "=",
+    "P": "="
+   },
+   "sr0": {
+    "Y": "+",
+    "P": "-"
+   },
+   "mr0": {
+    "Y": "+",
+    "P": "-",
+    "Ystar": "+"
+   }
+  },
+  "note": "imm0 Y= from Lecture 5 slide 3 (immediate run: Y set by demand, P fixed)."
+ },
+ {
+  "id": "L5-p3 horizons: immediate run fixes P and W",
+  "source": "Lecture 5, slide 3 (immediate: P, w, K fixed, Y by demand; short: w, K fixed, Y, P from AD-SRAS; medium: w updates)",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "G": 1
+  },
+  "results": {
+   "imm0": {
+    "P": "=",
+    "W": "="
+   },
+   "srimm": {
+    "W": "=",
+    "P": "+"
+   },
+   "mrsr": {
+    "W": "+"
+   },
+   "mr0": {
+    "Y": "="
+   }
+  }
+ },
+ {
+  "id": "L5-p4 M up shifts AD right",
+  "source": "Lecture 5, slide 4 (AD(M1) right of AD(M0))",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "M": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "P": "="
+   }
+  }
+ },
+ {
+  "id": "L5-p5 monetary expansion by horizon",
+  "source": "Lecture 5, slide 5 (immediate: P0, Y > Yn; short: along AS(w0), P up, Y down; medium: AS(w1), Y = Yn, P up)",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "M": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "P": "=",
+    "W": "=",
+    "i": "-"
+   },
+   "srimm": {
+    "Y": "-",
+    "P": "+",
+    "W": "="
+   },
+   "sr0": {
+    "Y": "+",
+    "P": "+",
+    "W": "=",
+    "W/P": "-",
+    "L": "+",
+    "i": "-",
+    "M/P": "+"
+   },
+   "mrsr": {
+    "Y": "-",
+    "P": "+",
+    "W": "+"
+   },
+   "mr0": {
+    "Y": "=",
+    "P": "+",
+    "W": "+",
+    "M": "+",
+    "i": "=",
+    "M/P": "=",
+    "W/P": "=",
+    "L": "=",
+    "I": "=",
+    "C": "="
+   }
+  },
+  "note": "mr0 i, M/P, W/P, L, I, C: money neutral in the medium run (Y = Y*, IS unchanged ⇒ i = i0 ⇒ M/P unchanged)."
+ },
+ {
+  "id": "L5-p6 loss of producer confidence",
+  "source": "Lecture 5, slide 6 (IS(MPK1e) left of IS(MPK0e); intersection with LM(M0) at lower Y and lower i)",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "I0": -1
+  },
+  "results": {
+   "imm0": {
+    "Y": "-",
+    "i": "-",
+    "P": "="
+   }
+  }
+ },
+ {
+  "id": "L5-p7 liquidity trap (perfectly elastic money demand): M ineffective",
+  "source": "Lecture 5, slide 7 (a standard monetary expansion is not effective when i = 0); slide 8 (buying bonds stops working at i ≈ 0)",
+  "settings": {
+   "economy": "closed",
+   "assume": {
+    "flatLM": true
+   }
+  },
+  "shocks": {
+   "M": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "=",
+    "i": "=",
+    "I": "="
+   },
+   "sr0": {
+    "Y": "=",
+    "P": "="
+   }
+  },
+  "note": "Trap modelled as flatLM. The true i = 0 trap is checked numerically in checks.mjs (E1)."
+ },
+ {
+  "id": "L5-p8 OMO: CB sells assets",
+  "source": "Lecture 5, slide 8 (selling assets lowers the money stock and raises i)",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "M": -1
+  },
+  "results": {
+   "imm0": {
+    "M": "-",
+    "i": "+"
+   }
+  }
+ },
+ {
+  "id": "L5-p8 OMO: CB buys assets",
+  "source": "Lecture 5, slide 8 (buying assets raises the money stock and lowers i)",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "M": 1
+  },
+  "results": {
+   "imm0": {
+    "M": "+",
+    "i": "-"
+   }
+  }
+ },
+ {
+  "id": "L5-p8 rate instrument: lower target",
+  "source": "Lecture 5, slide 8 (the CB sets i and so sets M indirectly; buying bonds raises M and lowers i)",
+  "settings": {
+   "economy": "closed",
+   "instrument": "r"
+  },
+  "shocks": {
+   "rT": -1
+  },
+  "results": {
+   "imm0": {
+    "i": "-",
+    "M": "+",
+    "Y": "+"
+   }
+  }
+ },
+ {
+  "id": "L5-p8 rate instrument: higher target",
+  "source": "Lecture 5, slide 8 (selling bonds lowers M and raises i)",
+  "settings": {
+   "economy": "closed",
+   "instrument": "r"
+  },
+  "shocks": {
+   "rT": 1
+  },
+  "results": {
+   "imm0": {
+    "i": "+",
+    "M": "-",
+    "Y": "-"
+   }
+  }
+ },
+ {
+  "id": "L5-p8 trap: fiscal policy effective, no crowding out",
+  "source": "Lecture 5, slide 8 (fiscal policy very effective in such a situation, no crowding out)",
+  "settings": {
+   "economy": "closed",
+   "assume": {
+    "flatLM": true
+   }
+  },
+  "shocks": {
+   "G": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "i": "=",
+    "I": "="
+   }
+  }
+ },
+ {
+  "id": "L5-p9 G up: temporary, crowding out",
+  "source": "Lecture 5, slide 9 (changes in AD affect output temporarily; note crowding out of investment)",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "G": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+"
+   },
+   "mr0": {
+    "Y": "=",
+    "I": "-"
+   }
+  }
+ },
+ {
+  "id": "L5-p9 G down: temporary",
+  "source": "Lecture 5, slide 9",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "G": -1
+  },
+  "results": {
+   "imm0": {
+    "Y": "-"
+   },
+   "mr0": {
+    "Y": "=",
+    "I": "+"
+   }
+  }
+ },
+ {
+  "id": "L5-p9 T up: temporary",
+  "source": "Lecture 5, slide 9",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "T": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "-"
+   },
+   "mr0": {
+    "Y": "="
+   }
+  }
+ },
+ {
+  "id": "L5-p9 C0 down: temporary",
+  "source": "Lecture 5, slide 9",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "C0": -1
+  },
+  "results": {
+   "imm0": {
+    "Y": "-"
+   },
+   "mr0": {
+    "Y": "="
+   }
+  }
+ },
+ {
+  "id": "L5-p9 MPKe up: temporary",
+  "source": "Lecture 5, slide 9",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "I0": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+"
+   },
+   "mr0": {
+    "Y": "="
+   }
+  }
+ },
+ {
+  "id": "L5-p9 M down: temporary",
+  "source": "Lecture 5, slide 9; slide 5 (mirror)",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "M": -1
+  },
+  "results": {
+   "imm0": {
+    "Y": "-",
+    "P": "="
+   },
+   "sr0": {
+    "Y": "-",
+    "P": "-"
+   },
+   "mr0": {
+    "Y": "=",
+    "P": "-",
+    "W": "-",
+    "i": "=",
+    "M/P": "="
+   }
+  }
+ },
+ {
+  "id": "L5-p9 money demand up: temporary",
+  "source": "Lecture 5, slide 9; Lecture 3 slides 9-11 (L(i,Y): higher liquidity preference raises i at given Y)",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "L0": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "-",
+    "i": "+",
+    "I": "-"
+   },
+   "mr0": {
+    "Y": "=",
+    "P": "-"
+   }
+  }
+ },
+ {
+  "id": "L5-p9 money demand down: temporary",
+  "source": "Lecture 5, slide 9",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "L0": -1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "i": "-",
+    "I": "+"
+   },
+   "mr0": {
+    "Y": "=",
+    "P": "+"
+   }
+  }
+ },
+ {
+  "id": "L6-p5 CB can lower unemployment (M up)",
+  "source": "Lecture 6, slide 5 (what can the CB do to lower unemployment / inflation; can it lower both at once?)",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "M": 1
+  },
+  "results": {
+   "sr0": {
+    "Y": "+",
+    "L": "+",
+    "P": "+"
+   }
+  },
+  "note": "Demand policy moves P and Y (employment) in the same direction in the short run: it cannot lower inflation and unemployment together."
+ },
+ {
+  "id": "L6-p5 CB can lower inflation (M down)",
+  "source": "Lecture 6, slide 5",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "M": -1
+  },
+  "results": {
+   "sr0": {
+    "Y": "-",
+    "L": "-",
+    "P": "-"
+   }
+  }
+ },
+ {
+  "id": "L6-p4 Fed raises its rate",
+  "source": "Lecture 6, slide 4 (why does the Fed raise and lower the rate) with Lecture 5, slide 8 (rate instrument)",
+  "settings": {
+   "economy": "closed",
+   "instrument": "r"
+  },
+  "shocks": {
+   "rT": 1
+  },
+  "results": {
+   "imm0": {
+    "i": "+",
+    "Y": "-"
+   },
+   "sr0": {
+    "Y": "-",
+    "P": "-",
+    "L": "-"
+   }
+  }
+ },
+ {
+  "id": "L6-p4 Fed lowers its rate",
+  "source": "Lecture 6, slide 4 with Lecture 5, slide 8",
+  "settings": {
+   "economy": "closed",
+   "instrument": "r"
+  },
+  "shocks": {
+   "rT": -1
+  },
+  "results": {
+   "imm0": {
+    "i": "-",
+    "Y": "+"
+   },
+   "sr0": {
+    "Y": "+",
+    "P": "+",
+    "L": "+"
+   }
+  }
+ },
+ {
+  "id": "LC1 Q1a ΔG = X: IS right",
+  "source": "Learning center 1, Q1a",
+  "settings": {
+   "economy": "closed",
+   "assume": {
+    "flatLM": true
+   }
+  },
+  "shocks": {
+   "G": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "i": "="
+   }
+  },
+  "note": "IS shift = ΔY at given i; magnitude X/(1−c) checked numerically."
+ },
+ {
+  "id": "LC1 Q1b ΔT = ΔG = X: IS right by X",
+  "source": "Learning center 1, Q1b",
+  "settings": {
+   "economy": "closed",
+   "assume": {
+    "flatLM": true
+   }
+  },
+  "shocks": {
+   "G": 1,
+   "T": 1
+  },
+  "fixedSizes": true,
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "i": "=",
+    "C": "="
+   }
+  }
+ },
+ {
+  "id": "LC1 Q1c ΔG = X, ΔT = Y < X: IS right",
+  "source": "Learning center 1, Q1c",
+  "settings": {
+   "economy": "closed",
+   "assume": {
+    "flatLM": true
+   }
+  },
+  "shocks": {
+   "G": 1,
+   "T": 0.5
+  },
+  "fixedSizes": true,
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "i": "="
+   }
+  }
+ },
+ {
+  "id": "LC1 Q1d ΔC0 = −X: IS left",
+  "source": "Learning center 1, Q1d",
+  "settings": {
+   "economy": "closed",
+   "assume": {
+    "flatLM": true
+   }
+  },
+  "shocks": {
+   "C0": -1
+  },
+  "results": {
+   "imm0": {
+    "Y": "-",
+    "i": "="
+   }
+  }
+ },
+ {
+  "id": "LC1 Q1e ΔT = X: IS left",
+  "source": "Learning center 1, Q1e",
+  "settings": {
+   "economy": "closed",
+   "assume": {
+    "flatLM": true
+   }
+  },
+  "shocks": {
+   "T": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "-",
+    "i": "="
+   }
+  }
+ },
+ {
+  "id": "LC2 Q1 balanced budget with LM: 0 < ΔY < X",
+  "source": "Learning center 2, Q1 (answer c: smaller than X, larger than 0; hint: money market)",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "G": 1,
+   "T": 1
+  },
+  "fixedSizes": true,
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "i": "+",
+    "I": "-",
+    "P": "="
+   }
+  }
+ },
+ {
+  "id": "LC2 Q3 G up and M up together",
+  "source": "Learning center 2, Q3 (Y rises; i cannot be determined)",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "G": 1,
+   "M": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "i": "?"
+   }
+  }
+ },
+ {
+  "id": "LC3 Q1 balanced fiscal expansion ΔG = ΔT > 0",
+  "source": "Learning center 3, Q1 (table: immediate vs origin, short vs immediate, medium vs short, medium vs origin); no official key in the PDF, cells derived as TA",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "G": 1,
+   "T": 1
+  },
+  "fixedSizes": true,
+  "results": {
+   "imm0": {
+    "G": "+",
+    "T": "+",
+    "Y": "+",
+    "C": "-",
+    "i": "+",
+    "I": "-",
+    "P": "=",
+    "M": "=",
+    "M/P": "=",
+    "W": "=",
+    "W/P": "=",
+    "L": "+"
+   },
+   "srimm": {
+    "G": "=",
+    "T": "=",
+    "Y": "-",
+    "C": "-",
+    "i": "+",
+    "I": "-",
+    "P": "+",
+    "M": "=",
+    "M/P": "-",
+    "W": "=",
+    "W/P": "-",
+    "L": "-"
+   },
+   "mrsr": {
+    "G": "=",
+    "T": "=",
+    "Y": "-",
+    "C": "-",
+    "i": "+",
+    "I": "-",
+    "P": "+",
+    "M": "=",
+    "M/P": "-",
+    "W": "+",
+    "W/P": "+",
+    "L": "-"
+   },
+   "mr0": {
+    "G": "+",
+    "T": "+",
+    "Y": "=",
+    "C": "-",
+    "i": "+",
+    "I": "-",
+    "P": "+",
+    "M": "=",
+    "M/P": "-",
+    "W": "+",
+    "W/P": "=",
+    "L": "="
+   }
+  }
+ },
+ {
+  "id": "LC3 Q2 monetary contraction ΔM < 0",
+  "source": "Learning center 3, Q2; no official key in the PDF, cells derived as TA",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "M": -1
+  },
+  "results": {
+   "imm0": {
+    "G": "=",
+    "T": "=",
+    "Y": "-",
+    "C": "-",
+    "i": "+",
+    "I": "-",
+    "P": "=",
+    "M": "-",
+    "M/P": "-",
+    "W": "=",
+    "W/P": "=",
+    "L": "-"
+   },
+   "srimm": {
+    "G": "=",
+    "T": "=",
+    "Y": "+",
+    "C": "+",
+    "i": "-",
+    "I": "+",
+    "P": "-",
+    "M": "=",
+    "M/P": "+",
+    "W": "=",
+    "W/P": "+",
+    "L": "+"
+   },
+   "mrsr": {
+    "G": "=",
+    "T": "=",
+    "Y": "+",
+    "C": "+",
+    "i": "-",
+    "I": "+",
+    "P": "-",
+    "M": "=",
+    "M/P": "+",
+    "W": "-",
+    "W/P": "-",
+    "L": "+"
+   },
+   "mr0": {
+    "G": "=",
+    "T": "=",
+    "Y": "=",
+    "C": "=",
+    "i": "=",
+    "I": "=",
+    "P": "-",
+    "M": "-",
+    "M/P": "=",
+    "W": "-",
+    "W/P": "=",
+    "L": "="
+   }
+  }
+ },
+ {
+  "id": "LC4 Q1 money-financed spending ΔG = ΔM",
+  "source": "Learning center 4, Q1 (government raises G, the governor prints money to finance it); no official key in the PDF",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "G": 1,
+   "M": 0.75
+  },
+  "fixedSizes": true,
+  "results": {
+   "imm0": {
+    "G": "+",
+    "T": "=",
+    "Y": "+",
+    "C": "+",
+    "i": "?",
+    "I": "?",
+    "P": "=",
+    "M": "+",
+    "M/P": "+",
+    "W": "=",
+    "W/P": "="
+   },
+   "srimm": {
+    "G": "=",
+    "T": "=",
+    "Y": "-",
+    "C": "-",
+    "i": "+",
+    "I": "-",
+    "P": "+",
+    "M": "=",
+    "M/P": "-",
+    "W": "=",
+    "W/P": "-"
+   },
+   "mrsr": {
+    "G": "=",
+    "T": "=",
+    "Y": "-",
+    "C": "-",
+    "i": "+",
+    "I": "-",
+    "P": "+",
+    "M": "=",
+    "M/P": "-",
+    "W": "+",
+    "W/P": "+"
+   },
+   "mr0": {
+    "G": "+",
+    "T": "=",
+    "Y": "=",
+    "C": "=",
+    "i": "+",
+    "I": "-",
+    "P": "+",
+    "M": "+",
+    "M/P": "-",
+    "W": "+",
+    "W/P": "="
+   }
+  },
+  "note": "G:1, M:0.75 gives ΔG = ΔM = 30 (SHOCK_UNIT G 30, M 40). i '?' on impact: both IS and LM shift right (as in LC2 Q3)."
+ },
+ {
+  "id": "LC4 Q3 economy B (money demand independent of Y)",
+  "source": "Learning center 4, Q3 (L_B^D(Y) = (=); identical fiscal expansion)",
+  "settings": {
+   "economy": "closed",
+   "assume": {
+    "noYMoney": true
+   }
+  },
+  "shocks": {
+   "G": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "i": "=",
+    "I": "=",
+    "C": "+",
+    "M": "="
+   },
+   "mr0": {
+    "Y": "=",
+    "i": "+",
+    "I": "-",
+    "C": "=",
+    "M": "="
+   }
+  }
+ },
+ {
+  "id": "LC4 Q3 economy A (money demand rises with Y)",
+  "source": "Learning center 4, Q3 (L_A^D(Y) = (+), as in class)",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "G": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "i": "+",
+    "I": "-",
+    "C": "+",
+    "M": "="
+   },
+   "mr0": {
+    "Y": "=",
+    "i": "+",
+    "I": "-",
+    "C": "=",
+    "M": "="
+   }
+  }
+ },
+ {
+  "id": "L2-p4 I = S + (T − G): G up in the medium run",
+  "source": "Lecture 2, slide 4 (I = S + (T − G): investment = private + public saving) with Lecture 5 slide 9 (Y = Y* in the medium run)",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "G": 1
+  },
+  "results": {
+   "mr0": {
+    "Y": "=",
+    "C": "=",
+    "I": "-"
+   }
+  },
+  "note": "Y and T unchanged ⇒ private saving unchanged; public saving falls by ΔG ⇒ I falls by ΔG."
+ },
+ {
+  "id": "L2-p4 I = S + (T − G): T cut in the medium run",
+  "source": "Lecture 2, slide 4 with Lecture 5 slide 9",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "T": -1
+  },
+  "results": {
+   "mr0": {
+    "Y": "=",
+    "C": "+",
+    "I": "-",
+    "T": "-"
+   }
+  },
+  "note": "ΔS = (1−c)|ΔT|, Δ(T−G) = −|ΔT| ⇒ ΔI = −c|ΔT| < 0."
+ },
+ {
+  "id": "EDGE G+ M- (opposite on Y)",
+  "source": "edge case: IS right, LM left (Lecture 3 slides 12, 15)",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "G": 1,
+   "M": -1
+  },
+  "results": {
+   "imm0": {
+    "Y": "?",
+    "i": "+",
+    "I": "-"
+   }
+  }
+ },
+ {
+  "id": "EDGE G+ T+ free sizes",
+  "source": "edge case: Lecture 2 slide 11 with unequal sizes",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "G": 1,
+   "T": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "?",
+    "i": "?",
+    "C": "?",
+    "I": "?"
+   }
+  }
+ },
+ {
+  "id": "EDGE M+ L0+",
+  "source": "edge case: Lecture 3 slides 9-12",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "M": 1,
+   "L0": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "?",
+    "i": "?"
+   },
+   "mr0": {
+    "Y": "=",
+    "i": "="
+   }
+  }
+ },
+ {
+  "id": "EDGE I0- G+ (stabilisation by G)",
+  "source": "edge case: Lecture 5 slide 6 with fiscal policy",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "I0": -1,
+   "G": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "?",
+    "i": "?"
+   },
+   "mr0": {
+    "Y": "="
+   }
+  }
+ },
+ {
+  "id": "EDGE I0- M+ (stabilisation by M, free sizes)",
+  "source": "edge case: Lecture 5 slide 6",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "I0": -1,
+   "M": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "?",
+    "i": "-"
+   },
+   "mr0": {
+    "Y": "=",
+    "i": "-"
+   }
+  }
+ },
+ {
+  "id": "EDGE C0+ T+",
+  "source": "edge case",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "C0": 1,
+   "T": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "?",
+    "i": "?"
+   }
+  }
+ },
+ {
+  "id": "EDGE M+ W+",
+  "source": "edge case: demand and supply shocks (Lecture 4 slide 19, Lecture 5 slide 5)",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "M": 1,
+   "W": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "P": "="
+   },
+   "sr0": {
+    "Y": "?",
+    "P": "+"
+   }
+  }
+ },
+ {
+  "id": "EDGE G+ W-",
+  "source": "edge case",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "G": 1,
+   "W": -1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "P": "="
+   },
+   "sr0": {
+    "Y": "+",
+    "P": "?"
+   }
+  }
+ },
+ {
+  "id": "EDGE W+ alone: immediate run unaffected, temporary",
+  "source": "engine design (W enters from the short run) + Lecture 5 slide 3 (w updates in the medium run)",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "W": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "=",
+    "P": "=",
+    "W": "="
+   },
+   "srimm": {
+    "Y": "-",
+    "P": "+",
+    "W": "+"
+   },
+   "mrsr": {
+    "Y": "+",
+    "P": "-",
+    "W": "-"
+   },
+   "mr0": {
+    "Y": "=",
+    "P": "=",
+    "W": "="
+   }
+  }
+ },
+ {
+  "id": "EDGE vertical IS (noRateI): G+",
+  "source": "edge case: I independent of i",
+  "settings": {
+   "economy": "closed",
+   "assume": {
+    "noRateI": true
+   }
+  },
+  "shocks": {
+   "G": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "i": "+",
+    "I": "="
+   }
+  }
+ },
+ {
+  "id": "EDGE vertical IS (noRateI): M+",
+  "source": "edge case: Lecture 5 slide 7 'or when demand is not elastic'",
+  "settings": {
+   "economy": "closed",
+   "assume": {
+    "noRateI": true
+   }
+  },
+  "shocks": {
+   "M": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "=",
+    "i": "-",
+    "I": "="
+   },
+   "sr0": {
+    "Y": "=",
+    "P": "="
+   }
+  }
+ },
+ {
+  "id": "EDGE k = 0 (noYMoney): M+",
+  "source": "edge case: flat LM still shifts with M (Learning center 4 Q3 economy B)",
+  "settings": {
+   "economy": "closed",
+   "assume": {
+    "noYMoney": true
+   }
+  },
+  "shocks": {
+   "M": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "i": "-"
+   },
+   "mr0": {
+    "Y": "=",
+    "i": "=",
+    "P": "+"
+   }
+  }
+ },
+ {
+  "id": "EDGE rateC: M+ stronger channel, same signs",
+  "source": "edge case: C depends on i",
+  "settings": {
+   "economy": "closed",
+   "assume": {
+    "rateC": true
+   }
+  },
+  "shocks": {
+   "M": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "i": "-",
+    "I": "+"
+   },
+   "mr0": {
+    "Y": "=",
+    "i": "=",
+    "C": "="
+   }
+  }
+ },
+ {
+  "id": "EDGE investY: M+ (δ = 0)",
+  "source": "edge case: I depends on Y, stable IS",
+  "settings": {
+   "economy": "closed",
+   "assume": {
+    "investY": true
+   }
+  },
+  "shocks": {
+   "M": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "i": "-",
+    "I": "+"
+   },
+   "mr0": {
+    "Y": "=",
+    "i": "="
+   }
+  }
+ },
+ {
+  "id": "EDGE investY: G+ (δ = 0)",
+  "source": "edge case: I depends on Y, stable IS",
+  "settings": {
+   "economy": "closed",
+   "assume": {
+    "investY": true
+   }
+  },
+  "shocks": {
+   "G": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "i": "+",
+    "I": "?"
+   },
+   "mr0": {
+    "Y": "=",
+    "i": "+",
+    "I": "-"
+   }
+  }
+ },
+ {
+  "id": "L2-p14 T = tY at given i: G up",
+  "source": "Lecture 2, slide 14 (T = tY; multiplier 1/(1 − (1 − t)c)); tax revenue rises with Y",
+  "settings": {
+   "economy": "closed",
+   "assume": {
+    "flatLM": true
+   }
+  },
+  "params": {
+   "t": 0.2
+  },
+  "shocks": {
+   "G": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "T": "+",
+    "C": "+",
+    "i": "="
+   }
+  }
+ },
+ {
+  "id": "L2-p14 T = tY in IS-LM: G up",
+  "source": "Lecture 2, slide 14 with Lecture 3 slide 15",
+  "settings": {
+   "economy": "closed"
+  },
+  "params": {
+   "t": 0.2
+  },
+  "shocks": {
+   "G": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "T": "+",
+    "i": "+",
+    "I": "-"
+   },
+   "mr0": {
+    "Y": "=",
+    "T": "=",
+    "I": "-"
+   }
+  }
+ },
+ {
+  "id": "L2-p14 T = tY in IS-LM: M down",
+  "source": "Lecture 2, slide 14 (automatic stabilizer: T falls with Y)",
+  "settings": {
+   "economy": "closed"
+  },
+  "params": {
+   "t": 0.3
+  },
+  "shocks": {
+   "M": -1
+  },
+  "results": {
+   "imm0": {
+    "Y": "-",
+    "T": "-",
+    "C": "-"
+   },
+   "mr0": {
+    "Y": "=",
+    "T": "="
+   }
+  }
+ },
+ {
+  "id": "LC4 Q2 G = G0 + δY: balanced ΔG0 = ΔT = X shifts IS by more than X",
+  "source": "Learning center 4, Q2 (answer b)",
+  "settings": {
+   "economy": "closed",
+   "assume": {
+    "flatLM": true
+   }
+  },
+  "params": {
+   "delta": 0.1
+  },
+  "shocks": {
+   "G": 1,
+   "T": 1
+  },
+  "fixedSizes": true,
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "G": "+",
+    "T": "+",
+    "C": "+",
+    "i": "="
+   }
+  },
+  "note": "ΔY = X(1−c)/(1−c−δ) > X = ΔT, so Y − T and C rise; total G = G0 + δY rises by more than X."
+ },
+ {
+  "id": "LC4 Q2 G = G0 + δY in IS-LM: G0 up",
+  "source": "Learning center 4, Q2 (setting) with Lecture 3 slide 15",
+  "settings": {
+   "economy": "closed"
+  },
+  "params": {
+   "delta": 0.05
+  },
+  "shocks": {
+   "G": 1
+  },
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "G": "+",
+    "i": "+",
+    "I": "-"
+   },
+   "mr0": {
+    "Y": "=",
+    "I": "-"
+   }
+  }
+ },
+ {
+  "id": "L5-p6 stabilisation: MPKe down, M raised so that Y stays at Yn",
+  "source": "Lecture 5, slide 6 (LM(M1) through IS(MPK1e) at Yn, lower i)",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "I0": -1
+  },
+  "rules": [
+   "M_Y"
+  ],
+  "results": {
+   "imm0": {
+    "Y": "=",
+    "i": "-",
+    "M": "+",
+    "I": "=",
+    "C": "=",
+    "P": "="
+   },
+   "sr0": {
+    "Y": "=",
+    "P": "="
+   },
+   "mr0": {
+    "Y": "=",
+    "P": "=",
+    "i": "-",
+    "M": "+"
+   }
+  }
+ },
+ {
+  "id": "LC3 Q1 via balanced-budget rule (free size of G, ΔT = ΔG)",
+  "source": "Learning center 3, Q1 with RULES.T_G",
+  "settings": {
+   "economy": "closed"
+  },
+  "shocks": {
+   "G": 1
+  },
+  "rules": [
+   "T_G"
+  ],
+  "results": {
+   "imm0": {
+    "Y": "+",
+    "C": "-",
+    "i": "+",
+    "I": "-",
+    "T": "+"
+   },
+   "mr0": {
+    "Y": "=",
+    "C": "-",
+    "I": "-",
+    "i": "+",
+    "P": "+"
+   }
+  }
+ }
+]

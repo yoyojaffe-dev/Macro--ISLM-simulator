@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Landmark, Coins, Users, Briefcase, Globe, Flag, Repeat, SlidersHorizontal, RotateCcw, X } from 'lucide-react';
-import { SHOCK_DEFS, PARAM_DEFS, ASSUMPTION_DEFS } from '../../engine/index.js';
+import { SHOCK_DEFS, PARAM_DEFS, ASSUMPTION_DEFS, RULES } from '../../engine/index.js';
 import { SECTORS, fmt } from '../theme.js';
 import { Segmented } from './primitives.jsx';
 
@@ -200,6 +200,11 @@ export default function ControlPanel({ state, dispatch }) {
             ))}
           </ul>
         )}
+        {state.rules.length > 0 && (
+          <p className="mt-2 rounded-md bg-paper px-2 py-1.5 text-[12px] leading-5 text-ink">
+            נקבע לפי כלל במקרה הבוחן: {state.rules.map((k) => RULES[k]?.label).filter(Boolean).join('; ')}.
+          </p>
+        )}
         {state.fixedSizes && active.length > 0 && (
           <p className="mt-2 rounded-md bg-paper px-2 py-1.5 text-[12px] leading-5 text-ink">
             גודל השינויים נתון בתרחיש שנטען.{' '}
@@ -285,7 +290,7 @@ export default function ControlPanel({ state, dispatch }) {
         <div className="border-t border-rule px-4 pb-3 pt-2">
           <div className="flex items-center justify-between">
             <p className="text-[12px] leading-5 text-muted">
-              c, b, h, k, m ו-n משנים רק את הציור: הסימנים מחושבים לכל השיפועים האפשריים. שיעור המס, δ, רוחב הרצועה והגודל היחסי של המשקים משפיעים גם על הסימנים.
+              c, b, h, k, m ו-n משנים רק את הציור: הסימנים מחושבים לכל השיפועים האפשריים. שיעור המס, δ, cᵢ, β, רוחב הרצועה והגודל היחסי של המשקים משפיעים גם על הסימנים. הסימולטור שומר על c(1 − t) + δ + β {'<'} 1 כדי שהמכפיל יהיה סופי.
             </p>
             <button
               type="button"
@@ -315,7 +320,7 @@ export default function ControlPanel({ state, dispatch }) {
                 max={p.max}
                 step={p.step}
                 digits={p.digits}
-                words={['נמוכה', 'בינונית', 'גבוהה']}
+                words={p.words || ['נמוכה', 'בינונית', 'גבוהה']}
                 hint={p.hint}
                 onChange={(value) => dispatch({ type: 'SET_PARAM', id: p.id, value })}
               />

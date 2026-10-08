@@ -26,7 +26,7 @@ function ChainNode({ node }) {
         title={pressure ? 'לחץ (שינוי שמתקזז בשיווי משקל)' : undefined}
       >
         <span dir="ltr">{node.sym}</span>
-        <span style={{ color: unknown ? '#B54708' : node.dir === 0 ? '#5B6577' : color }} title={unknown ? 'תלוי בגודל השינויים' : undefined}>
+        <span style={{ color: unknown ? '#B54708' : node.dir === 0 ? '#5B6577' : color }} title={unknown ? 'תלוי בגודל השינויים או בשיפועים' : undefined}>
           {dirCh}
         </span>
       </span>
@@ -56,7 +56,11 @@ function Chain({ chain }) {
           </div>
         ))}
       </div>
-      {chain.note && <p className="mt-2 text-[12px] leading-5 text-muted">{chain.note}</p>}
+      {chain.note && (
+        <p className="mt-2 text-[12px] leading-5 text-muted">
+          <RichText text={chain.note} />
+        </p>
+      )}
     </div>
   );
 }

@@ -4,6 +4,9 @@
  * Run with: npm test
  */
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
   buildScenario,
   DEFAULT_PARAMS,
@@ -28,6 +31,7 @@ import {
   laborDemandCurve,
   CASE_ARTICLES,
   COURSE_COLUMNS,
+  CAL,
   LC_VARS,
   calibrateShock,
   qualitative,
@@ -35,7 +39,11 @@ import {
   SHOCK_UNIT,
   sgn,
   DEFAULT_SETTINGS,
+  effectiveParams,
+  MPS_MAX,
+  PARAM_DEFS,
 } from '../src/engine/index.js';
+import { reducer, initialState } from '../src/store/reducer.js';
 import { COURSE_CLAIMS, PREMISE_CLAIMS } from './courseClaims.js';
 
 const P = DEFAULT_PARAMS;
@@ -61,7 +69,7 @@ test('t0 is the calibrated long-run equilibrium for every regime', () => {
   for (const s of [CLOSED, FIXED, FLOAT, { ...FLOAT, mobility: 'partial' }, { ...FIXED, mobility: 'none' }]) {
     const t0 = run(s, {}).snapshots[0];
     near(t0.Y, 1000);
-    near(t0.r, 3);
+    near(t0.r, CAL.rStar);
     near(t0.P, 1);
     near(t0.NX, 0, 1e-6);
   }
@@ -110,11 +118,11 @@ test('closed: money is neutral in the long run', () => {
 });
 
 test('closed: liquidity trap — monetary expansion has no effect at the ZLB', () => {
-  const a = run(CLOSED, { I0: -65 }).snapshots[1];
-  const b = run(CLOSED, { I0: -65, M: 100 }).snapshots[1];
+  const a = run(CLOSED, { I0: -100 }).snapshots[1];
+  const b = run(CLOSED, { I0: -100, M: 100 }).snapshots[1];
   assert.ok(a.zlb && b.zlb);
   near(a.Y, b.Y);
-  const sc = run(CLOSED, { I0: -65, M: 100 });
+  const sc = run(CLOSED, { I0: -100, M: 100 });
   assert.ok(sc.snapshots[3].noEq, 'vertical AD: no long-run equilibrium');
   assert.ok(evaluatePitfalls(sc, 1).some((p) => p.id === 'liquidityTrap'));
 });
@@ -134,7 +142,7 @@ test('fixed rate + perfect mobility: monetary policy fully offset by reserves', 
 
 test('fixed rate + perfect mobility: fiscal policy at full open-economy multiplier, no crowding out', () => {
   const [t0, sr, , lr] = run(FIXED, { G: 30 }).snapshots;
-  near(sr.r, 3);
+  near(sr.r, CAL.rStar);
   near(sr.I, t0.I);
   // Imports are a share of total absorption, G included (Lecture 8: TB = TB(a, a*, e)).
   near(sr.Y - t0.Y, (30 * (1 - P.m)) / (1 - P.c * (1 - P.m)));
@@ -339,9 +347,9 @@ test('a very small share of the world reproduces the small open economy', () => 
 test('expectations (UIP): r = r* + Δeᵉ, fading to zero by the long run', () => {
   const sc = run(FLOAT, { M: 50, Ee: -1 });
   const [, sr, mr, lr] = sc.snapshots;
-  near(sr.r, 2);
-  near(mr.r, 2.5);
-  near(lr.r, 3);
+  near(sr.r, CAL.rStar - 1);
+  near(mr.r, CAL.rStar - 0.5);
+  near(lr.r, CAL.rStar);
   const noExp = run(FLOAT, { M: 50 }).snapshots[1];
   assert.ok(sr.Y < noExp.Y, 'expected appreciation weakens the immediate effect (Lecture 9)');
 });
@@ -452,11 +460,11 @@ test('nominal wage push: stagflation in the medium run, back to the start in the
 test('interest-rate instrument: the central bank hits the target through M (Lecture 5 open market operations)', () => {
   const R = { ...CLOSED, instrument: 'r' };
   const sc = run(R, { rT: -1 });
-  near(sc.snapshots[1].r, 2);
+  near(sc.snapshots[1].r, CAL.rStar - 1);
   assert.ok(sc.rateTarget.dM > 0, 'lowering the rate requires buying bonds: M rises');
   // policy mix: holding the rate while G rises means full accommodation, no crowding out
   const mix = run(R, { G: 20 });
-  near(mix.snapshots[1].r, 3);
+  near(mix.snapshots[1].r, CAL.rStar);
   near(mix.snapshots[1].I, 100);
   near(mix.snapshots[1].Y - 1000, 20 / (1 - 0.8));
   // the zero lower bound caps the target
@@ -641,7 +649,7 @@ test('alternative assumptions: investment on Y raises the multiplier; exports ig
   near(x[1].Y, 1000);
   const flat = run({ ...CLOSED, assume: { flatLM: true } }, { M: 40 }).snapshots;
   near(flat[1].Y, 1000);
-  near(flat[1].r, 3);
+  near(flat[1].r, CAL.rStar);
 });
 
 test('band start position: at the lower edge appreciation pressure is met by intervention, depreciation is not', () => {
@@ -777,6 +785,228 @@ test('transmission chains agree with the solved model, including direction words
   assert.equal(wNode.dir, 0);
   const sup = buildChains(w, 2).find((c) => c.id === 'mr-supply');
   assert.equal(sup.nodes.find((n) => n.key === 'wP').dir, 1, 'W/P rises when the new contract wage takes effect');
+});
+
+// ---------------------------------------------------------------------------
+// Regression tests for the October 2026 review (re-reading every lecture and
+// learning center, an invariant sweep and a text audit).
+// ---------------------------------------------------------------------------
+
+test('claims from the slides, learning centers and past exams hold (tests/claims/*.json)', () => {
+  const dir = path.join(path.dirname(fileURLToPath(import.meta.url)), 'claims');
+  const COL = { imm0: ['origin', 1, 0], srimm: ['prev', 2, 1], sr0: ['origin', 2, 0], mrsr: ['prev', 3, 2], mr0: ['origin', 3, 0] };
+  const ALIAS = { i: 'r', TB: 'NX', Res: 'reservesDelta', W: 'w', 'W/P': 'wP', 'M/P': 'MP', D: 'debt', E: 'e' };
+  const norm = (x) => String(x).trim().replace(/-/g, '−');
+  let cells = 0;
+  const errs = [];
+  for (const f of ['closed-lectures-lc1-4.json', 'open-lectures-lc5-8.json', 'exams.json']) {
+    for (const c of JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8'))) {
+      const settings = { ...DEFAULT_SETTINGS, mobility: 'perfect', ...(c.settings || {}) };
+      const shocks = { ...ZERO_SHOCKS };
+      for (const [k, v] of Object.entries(c.shocks || {})) shocks[k] = v * SHOCK_UNIT[k];
+      const given = [];
+      for (const [col, vars] of Object.entries(c.givenSigns || {})) {
+        for (const [v0, sign] of Object.entries(vars)) given.push({ from: COL[col][2], to: COL[col][1], v: ALIAS[v0] || v0, sign: norm(sign) });
+      }
+      const q = qualitative({ ...P, ...(c.params || {}) }, settings, shocks, { fixed: Boolean(c.fixedSizes), rules: c.rules || [], given: given.length ? given : null });
+      for (const [col, vars] of Object.entries(c.results || {})) {
+        for (const [v0, want] of Object.entries(vars)) {
+          cells += 1;
+          const got = q[COL[col][0]][COL[col][1]][ALIAS[v0] || v0];
+          if (got !== norm(want)) errs.push(`${f} ${c.id}: ${col}.${v0} course ${norm(want)} engine ${got}`);
+        }
+      }
+    }
+  }
+  assert.equal(errs.length, 0, errs.slice(0, 6).join('\n'));
+  assert.ok(cells > 1100, `cells ${cells}`);
+});
+
+test('medium run: a demand cut that needs exactly i = 0 has an equilibrium, and prices stop at the first one', () => {
+  // With i* = 5% a unit G cut keeps the natural rate positive; a cut that
+  // needs exactly i = 0 lands on the boundary of the zero-bound region.
+  const sc = run(CLOSED, { G: -SHOCK_UNIT.G });
+  assert.ok(!sc.snapshots[3].noEq);
+  near(sc.snapshots[3].Y, 1000);
+  const edge = run(CLOSED, { G: -50 }); // 5 − 50/b = 0 at b = 10
+  const lr = edge.snapshots[3];
+  assert.ok(!lr.noEq, 'equilibrium at i = 0');
+  near(lr.Y, 1000);
+  assert.ok(lr.P > 0.9, `prices stop where i reaches 0 (P = ${lr.P})`);
+});
+
+test('medium run: AD vertical exactly at Y* keeps the price level; vertical AD elsewhere has no equilibrium', () => {
+  // Investment independent of i: M moves i but not demand.
+  const m = run({ ...CLOSED, assume: { noRateI: true } }, { M: SHOCK_UNIT.M });
+  assert.ok(!m.snapshots[3].noEq);
+  near(m.snapshots[3].P, 1);
+  near(m.snapshots[3].Y, 1000);
+  // A fiscal expansion then has no medium-run equilibrium: prices keep rising.
+  const g = run({ ...CLOSED, assume: { noRateI: true } }, { G: SHOCK_UNIT.G });
+  assert.ok(g.snapshots[3].noEq);
+  assert.equal(g.noEqReason, 'vertical');
+  assert.equal(g.noEqSide, 'excess');
+  // The central bank keeps M/P fixed and contracts are re-signed higher: prices stay at the new level.
+  const w = run({ ...CLOSED, assume: { realM: true } }, { W: SHOCK_UNIT.W });
+  assert.ok(!w.snapshots[3].noEq);
+  near(w.snapshots[3].P, w.snapshots[2].P);
+  // A liquidity trap is named as such.
+  const trap = run(CLOSED, { I0: -100 });
+  assert.equal(trap.noEqReason, 'trap');
+  assert.ok(trap.needsNegativeRate);
+});
+
+test('the multiplier stays finite: c(1 − t) + δ + β is capped below 1 in the engine and the store', () => {
+  const eff = effectiveParams({ ...P, c: 0.88, delta: 0.1, betaV: 0.15 }, { ...CLOSED, assume: { investY: true } });
+  assert.ok(eff.c * (1 - (eff.t || 0)) + eff.delta + eff.beta <= MPS_MAX + 1e-12);
+  const sc = run({ ...CLOSED, assume: { investY: true } }, { G: SHOCK_UNIT.G }, { ...P, c: 0.88, delta: 0.1, betaV: 0.15 });
+  assert.ok(sc.snapshots[1].Y > 1000, 'a fiscal expansion raises output');
+  let st = reducer({ ...initialState, settings: { ...initialState.settings, assume: { investY: true } } }, { type: 'SET_PARAM', id: 'delta', value: 0.1 });
+  st = reducer(st, { type: 'SET_PARAM', id: 'c', value: 0.88 });
+  const q = st.params;
+  assert.ok(q.c * (1 - q.t) + q.delta + q.betaV <= MPS_MAX + 1e-9, JSON.stringify(q));
+  assert.ok(PARAM_DEFS.find((d) => d.id === 'k').min > 0, 'k = 0 is an assumption, not a slider value');
+});
+
+test('band: an edge moved past the other one drags it along', () => {
+  const low = run({ ...BAND, bandStart: 'low' }, { bandHi: -5 }).snapshots[1];
+  near(low.e, 0.95);
+  assert.ok(low.reservesDelta < 0, 'the bank sells foreign currency');
+  const inside = run({ ...BAND, bandStart: 'inside' }, { bandHi: -15 }).snapshots[1];
+  near(inside.e, 0.85);
+  const t0 = run({ ...BAND, bandStart: 'low' }, { W: 6 }).snapshots;
+  assert.equal(t0[0].band, 'inside', 'starting exactly at an edge is not an intervention');
+  near(t0[1].reservesDelta, 0);
+});
+
+test('fixed labor demand: new wage contracts change only the real wage', () => {
+  const sc = run({ ...CLOSED, assume: { fixedLabor: true } }, { W: SHOCK_UNIT.W }).snapshots;
+  near(sc[2].w, 1 + SHOCK_UNIT.W / 100);
+  near(sc[2].Y, 1000);
+  assert.ok(sc[2].wP > 1);
+});
+
+test('two economies: a home fiscal expansion appreciates the home currency for every admissible size and import share', () => {
+  const omegaMax = PARAM_DEFS.find((d) => d.id === 'omega').max;
+  for (const omega of [0.05, 0.25, omegaMax]) {
+    for (const m of [0.05, 0.2, 0.4]) {
+      const [t0, sr] = run(LARGE, { G: 30 }, { ...P, omega, m }).snapshots;
+      assert.ok(sr.e < t0.e, `ω ${omega}, m ${m}`);
+    }
+  }
+});
+
+test('chains: direction words and notes follow the actual direction', () => {
+  const chainsAt = (settings, shocks, step) => {
+    const sc = run(settings, shocks);
+    const signs = qualitative(P, settings, { ...ZERO_SHOCKS, ...shocks });
+    const isolated = {};
+    for (const id of sc.activeShocks) isolated[id] = qualitative(P, settings, { ...ZERO_SHOCKS, [id]: sc.shocks[id] }).prev[1];
+    return buildChains({ ...sc, signs }, step, { isolated, signs });
+  };
+  // Lowering the ceiling below E: E falls and the bank SELLS foreign currency.
+  const hi = chainsAt({ ...BAND, bandStart: 'inside' }, { bandHi: -15 }, 1).find((c) => c.id === 'bandHi');
+  const eNode = hi.nodes.find((x) => x.key === 'e');
+  assert.equal(eNode.dir, -1);
+  assert.equal(eNode.note, 'הבנק מוכר מט״ח');
+  // Two economies, fiscal contraction: the note speaks of a contraction.
+  const lg = chainsAt(LARGE, { G: -30 }, 1).find((c) => c.id === 'G');
+  assert.ok(/צמצום/.test(lg.note) && /יורד/.test(lg.note), lg.note);
+  assert.ok(/צמצום/.test(lg.title), lg.title);
+  // Peg with expected appreciation: capital flows in and reserves rise.
+  const ee = chainsAt(FIXED, { Ee: -1 }, 1).find((c) => c.id === 'Ee');
+  assert.ok(/קונה/.test(ee.note), ee.note);
+  // No mechanism note next to "?" or next to a node that does not move as the template says.
+  for (const ch of chainsAt(CLOSED, { G: 30, M: -40 }, 2).concat(chainsAt({ ...CLOSED, assume: { noRateI: true } }, { M: 40 }, 1))) {
+    for (const x of ch.nodes) if (x.dir === '?') assert.ok(!x.note || x.note === x.hint, `${ch.id} ${x.key} ${x.note}`);
+  }
+  const flat = chainsAt({ ...CLOSED, assume: { noRateI: true } }, { M: 40 }, 1).find((c) => c.id === 'M');
+  assert.equal(flat.nodes.find((x) => x.key === 'Y').note, undefined, 'no multiplier note when Y does not move');
+});
+
+test('chains: the liquidity-trap chain only when the rate was already at zero without the money', () => {
+  const japan = CASES.find((c) => c.id === 'japanTrap');
+  const settings = { ...DEFAULT_SETTINGS, ...japan.settings };
+  const params = { ...P, ...japan.params };
+  const sc = buildScenario(params, settings, { ...ZERO_SHOCKS, ...japan.shocks });
+  const signs = qualitative(params, settings, { ...ZERO_SHOCKS, ...japan.shocks }, { fixed: true });
+  const m = buildChains({ ...sc, signs }, 1, { signs }).find((c) => c.id === 'M');
+  assert.equal(m.nodes.find((x) => x.key === 'Y').dir, 0);
+  assert.ok(evaluatePitfalls({ ...sc, signs }, 1).some((a) => a.id === 'liquidityTrap'));
+  // A monetary expansion that itself brings i to zero is not a trap.
+  const k0 = run({ ...CLOSED, assume: { noYMoney: true } }, { M: 200 });
+  assert.ok(k0.snapshots[1].zlb);
+  const al = evaluatePitfalls(k0, 1).map((a) => a.id);
+  assert.ok(al.includes('zlbReached') && !al.includes('liquidityTrap'), al.join(','));
+});
+
+test('chains: the wage chain follows W, and expectations alone bring Y back without a wage chain', () => {
+  const sc = run(FLOAT, { Ee: 1 });
+  const ids = buildChains(sc, 3).map((c) => c.id);
+  assert.ok(!ids.includes('lr-wages'), ids.join(','));
+  const fl = buildChains(run({ ...CLOSED, assume: { fixedLabor: true } }, { G: 30 }), 3);
+  const wages = fl.find((c) => c.id === 'lr-wages');
+  assert.ok(wages && /הביקוש לעובדים קבוע/.test(wages.note));
+  const vert = buildChains(run({ ...CLOSED, assume: { noRateI: true } }, { G: 30 }), 3)[0];
+  assert.ok(/AD אנכית/.test(vert.title) && /ההשקעה לא תלויה בריבית/.test(vert.note), vert.note);
+});
+
+test('alerts: balanced budget only for equal sizes, direction-aware texts, no wrong-step alerts', () => {
+  const both = { G: 30, T: 30 };
+  const free = { ...run(CLOSED, both), signs: qualitative(P, CLOSED, { ...ZERO_SHOCKS, ...both }), fixedSizes: false };
+  assert.ok(!evaluatePitfalls(free, 1).some((a) => a.id === 'balancedBudget'));
+  const fixed = { ...run(CLOSED, both), signs: qualitative(P, CLOSED, { ...ZERO_SHOCKS, ...both }, { fixed: true }), fixedSizes: true };
+  assert.ok(evaluatePitfalls(fixed, 1).some((a) => a.id === 'balancedBudget'));
+  const down = { ...run(CLOSED, { G: -30, T: -30 }), fixedSizes: true };
+  assert.ok(/יורדת/.test(evaluatePitfalls(down, 1).find((a) => a.id === 'balancedBudget').body));
+  const reval = evaluatePitfalls(run(FIXED, { e: -8 }), 3).find((a) => a.id === 'devaluationLR');
+  assert.ok(/יורד/.test(reval.body) && /ייסוף/.test(reval.title), reval.body);
+  const war = run(LARGE, { Mf: 40 });
+  assert.ok(evaluatePitfalls(war, 1).some((a) => a.id === 'currencyWar'));
+  assert.ok(!evaluatePitfalls(war, 3).some((a) => a.id === 'currencyWar' || a.id === 'largeFiscal'));
+  const uip3 = evaluatePitfalls(run(FLOAT, { Ee: 1 }), 3).find((a) => a.id === 'uip');
+  assert.ok(/ΔEᵉ = 0/.test(uip3.body), uip3.body);
+  const k0 = evaluatePitfalls(run({ ...CLOSED, assume: { noYMoney: true } }, { I0: 25 }), 1).find((a) => a.id === 'kZero');
+  assert.ok(k0 && !/נדחק בכל זאת/.test(k0.body));
+});
+
+test('case studies: the story each step tells matches the sign table', () => {
+  const signsOf = (id) => {
+    const cs = CASES.find((c) => c.id === id);
+    const settings = { ...DEFAULT_SETTINGS, ...cs.settings };
+    return qualitative({ ...P, ...cs.params }, settings, { ...ZERO_SHOCKS, ...cs.shocks }, { fixed: true, rules: cs.rules || [] });
+  };
+  const jp = signsOf('japanTrap');
+  assert.equal(jp.origin[1].Y, '−');
+  assert.equal(jp.prev[2].Y, '=');
+  assert.equal(jp.origin[2].P, '−');
+  assert.equal(jp.noEq[3], 'all');
+  const pol = signsOf('gfc2008policy');
+  assert.equal(pol.origin[1].Y, '−', 'the policy softens the recession, it does not prevent it');
+  assert.equal(pol.noEq[3], null);
+  const mix = signsOf('policyMix');
+  assert.equal(mix.origin[1].r, '=');
+  assert.equal(mix.origin[1].I, '=');
+  assert.equal(mix.origin[1].M, '+');
+  assert.equal(signsOf('covid').origin[1].e, '−');
+  assert.equal(signsOf('autoStab').noEq[3], null);
+  for (const cs of CASES) {
+    const q = signsOf(cs.id);
+    for (let st = 1; st <= 3; st += 1) assert.notEqual(q.noEq[st] === 'all' && st < 3, true, `${cs.id} step ${st}`);
+  }
+});
+
+test('the drawn case stays the same across steps unless the student picks another one', () => {
+  let st = reducer(initialState, { type: 'SET_DIR', id: 'G', dir: -1 });
+  assert.equal(st.caseVec, null);
+  st = reducer(st, { type: 'SET_CASE', vec: { G: 3 } });
+  assert.deepEqual(st.caseVec, { G: 3 });
+  st = reducer(st, { type: 'NEXT' });
+  assert.deepEqual(st.caseVec, { G: 3 });
+  const loaded = reducer(initialState, { type: 'LOAD_CASE', id: 'policyMix' });
+  assert.deepEqual(loaded.rules, ['M_r']);
+  const left = reducer(loaded, { type: 'SET_DIR', id: 'T', dir: 1 });
+  assert.deepEqual(left.rules, []);
 });
 
 console.log(`${passed} tests passed${process.exitCode ? ' (with failures)' : ''}`);

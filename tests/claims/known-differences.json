@@ -1,0 +1,143 @@
+[
+ {
+  "id": "L8-s13 AD under a peg: P up => e down => TB down => IS left => Y down (wage push)",
+  "source": "Lecture 8, slide 13 (diagram: LM(M0/P0) -> LM(M0/P1) -> LM(M1/P1), M1 < M0 as drawn)",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "fixed"
+  },
+  "shocks": {
+   "W": 1
+  },
+  "results": {
+   "sr0": {
+    "P": "+",
+    "Y": "-",
+    "eps": "-",
+    "NX": "-",
+    "r": "=",
+    "e": "=",
+    "MP": "-",
+    "M": "-"
+   },
+   "mr0": {
+    "Y": "=",
+    "P": "="
+   }
+  },
+  "note": "M \"-\" is only implied by how the diagram is drawn (LM(M1/P1) left of LM(M0/P1)); in general M = P·L(Y,i*) with P up and L down"
+ },
+ {
+  "id": "L9-s9/s10/s11 monetary expansion with expected appreciation (overshooting)",
+  "source": "Lecture 9, slides 9-10 (i* > i in the immediate run; weaker effect; then LM left and CM up back to origin) and slide 11 (Fig. 14-6: Q up then back, i below i* then back)",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "floating"
+  },
+  "shocks": {
+   "M": 1,
+   "Ee": -0.3
+  },
+  "fixedSizes": true,
+  "results": {
+   "imm0": {
+    "M": "+",
+    "r": "-",
+    "Y": "+",
+    "e": "+",
+    "eps": "+",
+    "P": "=",
+    "I": "+"
+   },
+   "srimm": {
+    "r": "+",
+    "MP": "-",
+    "P": "+",
+    "eps": "-",
+    "e": "?"
+   },
+   "mrsr": {
+    "r": "+",
+    "MP": "-",
+    "P": "+",
+    "eps": "-",
+    "e": "?"
+   },
+   "mr0": {
+    "r": "=",
+    "Y": "=",
+    "e": "+",
+    "P": "+",
+    "eps": "=",
+    "MP": "=",
+    "M": "+"
+   }
+  },
+  "note": "I + is derived from I(i); E after the jump: course says \"rises or falls\""
+ },
+ {
+  "id": "L12-s12 no capital mobility, float: CA balances, closed-economy IS-LM (G)",
+  "source": "Lecture 12, slide 12 (point 2: IS-LM like a closed economy; with a float the XR moves so the CA balances)",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "floating",
+   "mobility": "none"
+  },
+  "shocks": {
+   "G": 1
+  },
+  "results": {
+   "imm0": {
+    "NX": "=",
+    "Y": "+",
+    "r": "+"
+   }
+  },
+  "note": "mobility \"none\" is not exposed in the UI"
+ },
+ {
+  "id": "L12-s12 no capital mobility, float (M)",
+  "source": "Lecture 12, slide 12 (point 2)",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "floating",
+   "mobility": "none"
+  },
+  "shocks": {
+   "M": 1
+  },
+  "results": {
+   "imm0": {
+    "NX": "=",
+    "Y": "+",
+    "r": "-"
+   }
+  },
+  "note": "mobility \"none\" is not exposed in the UI"
+ },
+ {
+  "id": "L12-s12 no capital mobility, peg: the CB finances the trade deficit with reserves",
+  "source": "Lecture 12, slide 12 (point 2: the government can absorb excess imports by selling assets abroad; only without intervention must the CA balance)",
+  "settings": {
+   "economy": "open",
+   "size": "small",
+   "regime": "fixed",
+   "mobility": "none"
+  },
+  "shocks": {
+   "G": 1
+  },
+  "results": {
+   "imm0": {
+    "NX": "-",
+    "reservesDelta": "-",
+    "Y": "+"
+   }
+  },
+  "note": "mobility \"none\" is not exposed in the UI"
+ }
+]
