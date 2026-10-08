@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: #f3f5f8;
+  }
+}
+
+/* Variable tokens: italic math symbols in sector colors */
+.var-token {
+  font-family: 'STIX Two Text', 'Cambria Math', 'Times New Roman', serif;
+  font-style: italic;
+  font-weight: 700;
+  unicode-bidi: isolate;
+}
+.var-glow {
+  text-shadow: 0 0 10px color-mix(in srgb, var(--glow) 55%, transparent);
+}
+.num-token {
+  font-family: 'STIX Two Text', 'Cambria Math', serif;
+  font-variant-numeric: tabular-nums;
+  border-radius: 4px;
+  padding: 0 1px;
+  unicode-bidi: isolate;
+}
+.num-flash {
+  animation: num-flash 1.2s ease-out;
+}
+@keyframes num-flash {
+  0% {
+    background: color-mix(in srgb, var(--glow) 28%, transparent);
+    text-shadow: 0 0 12px color-mix(in srgb, var(--glow) 70%, transparent);
+  }
+  100% {
+    background: transparent;
+    text-shadow: none;
+  }
+}
+.chain-active {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--glow) 14%, transparent);
+}
+
+/* Linked diagrams: a 2x2 square. The page is RTL, so the first column of each
+   area string is on the right: IS-LM top-right with the money market to its
+   left (shared i axis), AD-AS directly below IS-LM (shared Y axis), and the
+   labor market to the left of AD-AS, below the money market. */
+.linked-grid {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: 'money' 'islm' 'adas' 'labor';
+}
+@media (min-width: 1100px) {
+  .linked-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      'islm money'
+      'adas labor';
+  }
+}
+
+/* Graph-paper chart background */
+.graph-paper {
+  background-color: #fbfcfd;
+  background-image: linear-gradient(#eef1f5 1px, transparent 1px), linear-gradient(90deg, #eef1f5 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+/* Range inputs: thin track in the sector color */
+.range {
+  height: 22px;
+  cursor: pointer;
+}
+.range:focus-visible {
+  outline: 2px solid #172033;
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.toast-in {
+  animation: toast-in 0.28s ease-out;
+}
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .num-flash,
+  .toast-in {
+    animation: none;
+  }
+  * {
+    transition: none !important;
+  }
+}
