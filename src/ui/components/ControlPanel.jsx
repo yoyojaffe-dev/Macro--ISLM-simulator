@@ -231,6 +231,25 @@ export default function ControlPanel({ state, dispatch }) {
             );
           })}
         </div>
+        {open && shocks.Ee !== 0 && (
+          <div className="mt-3 rounded-lg bg-paper p-2.5">
+            <p className="mb-1.5 text-[12.5px] font-semibold text-ink">כמה מהר הציפיות לשינוי בשע״ח דועכות?</p>
+            <Segmented
+              size="sm"
+              ariaLabel="קצב דעיכת הציפיות"
+              value={settings.eeFade || 'half'}
+              onChange={set('eeFade')}
+              options={[
+                { value: 'fast', label: 'מהר', title: 'בטווח הקצר כבר אין ציפיות לשינוי בשער' },
+                { value: 'half', label: 'בהדרגה', title: 'בטווח הקצר נשארת מחצית מהציפייה' },
+                { value: 'slow', label: 'לאט', title: 'הציפייה נשארת מלאה עד הטווח הבינוני' },
+              ]}
+            />
+            <p className="mt-1.5 text-[11.5px] leading-5 text-muted">
+              ההרצאה (9) לא קובעת את הקצב. בכל מקרה בטווח הבינוני הציפיות נעלמות ו-i = i*. הכיוון של E בטווח הקצר תלוי בקצב: השוו את שלוש האפשרויות.
+            </p>
+          </div>
+        )}
       </section>
 
       {/* 3. Alternative assumptions (exam variants) */}

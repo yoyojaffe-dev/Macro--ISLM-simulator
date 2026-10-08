@@ -378,7 +378,7 @@ export default function EquationsPanel({ scenario, step }) {
                 ? large
                   ? 'i* נקבע בשוק העולמי'
                   : scenario.shocks.Ee
-                    ? 'הציפיות דועכות: מלאות בטווח המיידי, חלקיות בקצר, אפס בבינוני'
+                    ? `הציפיות דועכות: מלאות בטווח המיידי, ${{ fast: 'אפס', slow: 'מלאות', half: 'חצי' }[settings.eeFade || 'half']} בקצר, אפס בבינוני`
                     : 'בלי ציפיות לשינוי בשער: i = i*'
                 : `κ = ${fmt(kap, 0)}`
             }

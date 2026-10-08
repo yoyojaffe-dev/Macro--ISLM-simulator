@@ -1009,4 +1009,15 @@ test('the drawn case stays the same across steps unless the student picks anothe
   assert.deepEqual(left.rules, []);
 });
 
+test('expectation fade speed: fast, gradual or slow, always zero in the medium run (Lecture 9)', () => {
+  for (const [fade, share] of [['fast', 0], ['half', 0.5], ['slow', 1]]) {
+    const [, sr, mr, lr] = run({ ...FLOAT, eeFade: fade }, { Ee: 1 }).snapshots;
+    near(sr.r, CAL.rStar + 1);
+    near(mr.r, CAL.rStar + share);
+    near(lr.r, CAL.rStar);
+  }
+  const q = (fade) => qualitative(P, { ...FLOAT, eeFade: fade }, { ...ZERO_SHOCKS, M: 50, Ee: -0.3 }, { fixed: true }).prev[2].e;
+  for (const fade of ['fast', 'half', 'slow']) assert.ok(['+', '−', '?'].includes(q(fade)));
+});
+
 console.log(`${passed} tests passed${process.exitCode ? ' (with failures)' : ''}`);

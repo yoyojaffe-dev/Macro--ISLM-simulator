@@ -322,9 +322,9 @@ export function demand(params, settings, exo, P) {
   const { c, b, k, h } = params;
   const { open, m, n, phi } = openCoefs(params, settings);
   const kap = kappaOf(settings, params);
-  if (isLarge(settings)) return demandLarge(params, settings, exo, P);
   // A central bank that keeps real balances fixed supplies M = (M/P)·P.
   if (exo.realM != null) exo = { ...exo, M: exo.realM * P };
+  if (isLarge(settings)) return demandLarge(params, settings, exo, P);
   const rW = exo.rStar + (exo.Ee || 0); // UIP: r = r* + expected depreciation
   const S = spending(params, exo);
   const Abar = S.aut; // autonomous absorption (C + I + G)
@@ -609,6 +609,14 @@ function equilibriumPrices(params, settings, exo, yT, yfT, prefer = CAL.P0) {
 
 /** Share of the expected exchange-rate change still present at each step (expectations fade). */
 export const EXPECTATION_DECAY = { t0: 0, sr: 1, mr: 0.5, lr: 0 };
+/**
+ * How fast expectations of an exchange-rate change fade (settings.eeFade): the
+ * share still present in the short run. Lecture 9 leaves the speed open, and
+ * the direction of E in the short run depends on it.
+ */
+export const EXPECTATION_FADE = { fast: 0, half: 0.5, slow: 1 };
+export const expectationShare = (settings, key) =>
+  key === 'mr' ? EXPECTATION_FADE[settings?.eeFade] ?? EXPECTATION_DECAY.mr : EXPECTATION_DECAY[key];
 
 /**
  * Build all four horizon snapshots.
@@ -649,7 +657,7 @@ export function buildScenario(rawParams, settings, rawShocks) {
   let realM = null;
   const exoAt = (key) => ({
     ...shocked,
-    Ee: (shocks.Ee || 0) * EXPECTATION_DECAY[key],
+    Ee: (shocks.Ee || 0) * expectationShare(settings, key),
     ...(carry[key] != null ? { M: carry[key] } : {}),
     ...(realM != null && key !== 'sr' ? { realM } : {}),
   });

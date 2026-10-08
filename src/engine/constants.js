@@ -534,8 +534,8 @@ export const ASSUMPTION_DEFS = [
     id: 'realM',
     label: 'הבנק המרכזי שומר על M/P קבוע',
     formula: 'M/P = const',
-    hint: 'מהטווח הקצר הבנק מגדיל את M יחד עם P: AD אנכית, ואם Y ≠ Y* אין שיווי משקל בטווח הבינוני (מבחן 2026, מועד א׳).',
-    applies: (s) => notLarge(s) && (s.economy === 'closed' || s.regime === 'floating'),
+    hint: 'מהטווח הקצר הבנק מגדיל את M יחד עם P: AD אנכית, ואם Y ≠ Y* אין שיווי משקל בטווח הבינוני (מבחן 2026, מועד א׳). אפשר גם בעולם של שתי כלכלות עם שע״ח נייד (שם, שאלה 1ב).',
+    applies: (s) => s.economy === 'closed' || s.regime === 'floating',
   },
 ];
 
@@ -553,6 +553,7 @@ export const DEFAULT_SETTINGS = Object.freeze({
   mobility: 'perfect', // 'perfect' | 'partial' | 'none'
   school: 'keynesian', // the course's supply side (Lecture 5); other values are kept for tests only
   assume: {}, // alternative assumptions, see ASSUMPTION_DEFS
+  eeFade: 'half', // how fast expected exchange-rate changes fade: 'fast' | 'half' | 'slow'
 });
 
 /** The four simulator states. `course` is the matching horizon name in the course slides. */
